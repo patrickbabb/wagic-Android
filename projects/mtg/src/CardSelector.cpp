@@ -313,40 +313,44 @@ switch_active:
 
 void CardSelector::Update(float dt)
 {
-    float boundary = duel->RightBoundary();
-    float position = boundary - CardGui::BigWidth / 2;
-    if (CardView* c = dynamic_cast<CardView*>(active))
-        if ((c->x + CardGui::Width / 2 > position - CardGui::BigWidth / 2) && (c->x - CardGui::Width / 2 < position
-                        + CardGui::BigWidth / 2))
-            position = CardGui::BigWidth / 2 - 10;
-    if (position < CardGui::BigWidth / 2)
-        position = CardGui::BigWidth / 2;
-    bigpos.x = position;
+    // Smaller fixed scale (adjust this number if needed)
+    float scale = 0.65f;
+
+    float halfW = (CardGui::BigWidth * scale) / 2.0f;
+    float halfH = (CardGui::BigHeight * scale) / 2.0f;
+
+    // 10px padding from right, 15px from top
+    bigpos.x = SCREEN_WIDTH - halfW - 10.0f;
+    bigpos.y = halfH + 15.0f;
+
+    bigpos.zoom = scale;
+
     bigpos.Update(dt);
-    //what i really wanted for this was when you remove your finger from the screen or the pointer of your mouse from the screen area
-    //i wanted it to reduce the show timer to 0, which keeps the big image from displaying. 
-    //couldn't find a method to check if the finger was still touching the screen that wouldn't break mouse support.
-    //so instead regitering movement resets the timer, which is set to display for about 5 secs;
-    //if it gets too annoying we can increase or remove this.
-    if(timer > 0)
-    timer -= 1;
+
+    if (timer > 0)
+        timer -= 1;
 }
 
 void CardSelector::Render()
 {
-    if (active)
+    if (!active)
+        return;
+
+    active->Render();
+
+    if (CardView* card = dynamic_cast<CardView*>(active))
     {
-        active->Render();
-        if (CardView* card = dynamic_cast<CardView*>(active) )
+        if (timer > 0)
         {
-            //if(timer > 0)
-                //card->DrawCard(bigpos, mDrawMode);
-            if(timer > 0)
-             {
-                 float modx = 0.f;
-                 Pos npos = Pos(bigpos.x+modx,bigpos.y-4.f,bigpos.zoom-(bigpos.zoom/5),bigpos.t,bigpos.alpha);
-                 card->DrawCard(npos, mDrawMode);
-             }
+            Pos npos(
+                    bigpos.x,
+                    bigpos.y,
+                    bigpos.zoom,
+                    bigpos.t,
+                    bigpos.alpha
+            );
+
+            card->DrawCard(npos, mDrawMode);
         }
     }
 }

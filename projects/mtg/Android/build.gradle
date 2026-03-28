@@ -10,6 +10,9 @@ buildscript {
 
 apply plugin: 'com.android.application'
 
+def props = new Properties()
+file("local.properties").withInputStream { props.load(it) }
+
 android {
     namespace 'net.wagic.app'
     compileSdk 34
@@ -49,12 +52,22 @@ android {
         }
     }
 
+    signingConfigs {
+        release {
+            storeFile file('assets/_keystore')
+            storePassword props['WAGIC_STORE_PASSWORD']
+            keyAlias    props['WAGIC_KEY_ALIAS']
+            keyPassword props['WAGIC_KEY_PASSWORD']
+        }
+    }
+
     buildTypes {
         debug {
             debuggable true
         }
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
         }
     }
 
