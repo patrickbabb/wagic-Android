@@ -164,6 +164,9 @@ class JGE
   int mLastLeftClickX;
   int mlastLeftClickY;
 
+  static int mScreenWidth;
+  static int mScreenHeight;
+
   friend void Run();
 
  public:
@@ -188,6 +191,11 @@ class JGE
 
   void Pause();
   void Resume();
+
+  static void SetScreenWidth(int width);
+  static void SetScreenHeight(int height);
+  static int  GetScreenWidth();
+  static int  GetScreenHeight();
 
   //////////////////////////////////////////////////////////////////////////
   /// Return argv.

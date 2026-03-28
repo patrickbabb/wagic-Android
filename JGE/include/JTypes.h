@@ -69,10 +69,15 @@ enum {
 #define SAFE_DELETE_ARRAY(x)	if (x) { delete [] x; x = NULL; }
 
 
-#define SCREEN_WIDTH 			480
-#define SCREEN_HEIGHT 			272
-#define SCREEN_WIDTH_F 			480.0f
-#define SCREEN_HEIGHT_F			272.0f
+#define SCREEN_WIDTH 			(JGE::GetScreenWidth())
+#define SCREEN_HEIGHT 			(JGE::GetScreenHeight())
+#define SCREEN_WIDTH_F 			((float)JGE::GetScreenWidth())
+#define SCREEN_HEIGHT_F			((float)JGE::GetScreenHeight())
+
+// Scale factor relative to original PSP resolution
+#define SCALE_X             (JGE::GetScreenWidth()  / 480.0f)
+#define SCALE_Y             (JGE::GetScreenHeight() / 272.0f)
+#define SCALE               (JGE::GetScreenHeight() / 272.0f)  // uniform scale based on height
 
 
 #ifdef CONSOLE_CONFIG

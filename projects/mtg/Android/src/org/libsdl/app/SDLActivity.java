@@ -26,6 +26,7 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -1149,6 +1150,12 @@ public class SDLActivity extends Activity implements OnKeyListener {
 
 		// Enable immersive mode
 		enterImmersiveMode();
+
+        // Hide camera cutout
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            getWindow().getAttributes().layoutInDisplayCutoutMode =
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+        }
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 

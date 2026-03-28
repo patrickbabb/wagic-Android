@@ -4,6 +4,7 @@
 #include "Translate.h"
 #include "WResourceManager.h"
 #include "ModRules.h"
+#include "JGE.h"
 
 MenuItem::MenuItem(int id, WFont *font, string text, float x, float y, JQuad * _off, JQuad * _on, const char * particle,
                 JQuad * particleTex, bool hasFocus) :
@@ -41,7 +42,7 @@ void MenuItem::Render()
         if (mParticleSys)
             start = mParticleSys->info.colColorStart.GetHWColor();
         PIXEL_TYPE colors[] = { ARGB(0,0,0,0), start, ARGB(0,0,0,0), start, };
-        renderer->FillRect(255, 0, SCREEN_WIDTH - 165, SCREEN_HEIGHT, colors);//color on main menu right side
+        renderer->FillRect(SCREEN_WIDTH - 400 * SCALE, 0, 400 * SCALE, SCREEN_HEIGHT, colors);
         // set additive blending
         renderer->SetTexBlend(BLEND_SRC_ALPHA, BLEND_ONE);
         mParticleSys->Render();
@@ -49,16 +50,16 @@ void MenuItem::Render()
         renderer->SetTexBlend(BLEND_SRC_ALPHA, BLEND_ONE_MINUS_SRC_ALPHA);
         mFont->SetColor(ARGB(255,255,255,255));
         offQuad->SetColor(ARGB(60,255,255,255));
-        renderer->RenderQuad(offQuad, SCREEN_WIDTH, SCREEN_HEIGHT / 2, 0, 8, 8);//big icon main menu right side
+        float iconScale = SCREEN_HEIGHT / (36.0f * 1.8f);
+        renderer->RenderQuad(offQuad, SCREEN_WIDTH - 20 * SCALE, SCREEN_HEIGHT / 2, 0, iconScale, iconScale);
         offQuad->SetColor(ARGB(255,255,255,255));
         onQuad->SetColor(ARGB(255,255,255,255));
         mFont->DrawString(mText.c_str(), SCREEN_WIDTH / 2, 3 * SCREEN_HEIGHT / 4, JGETEXT_CENTER);
-        renderer->RenderQuad(onQuad, mX, mY, 0, mScale, mScale);
-
+        renderer->RenderQuad(onQuad, mX, mY, 0, mScale * SCALE, mScale * SCALE);
     }
     else
     {
-        renderer->RenderQuad(offQuad, mX, mY, 0, mScale, mScale);
+        renderer->RenderQuad(offQuad, mX, mY, 0, mScale * SCALE, mScale * SCALE);
     }
     updatedSinceLastRender = 0;
 }

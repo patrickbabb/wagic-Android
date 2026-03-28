@@ -455,7 +455,7 @@ void GameStateMenu::ensureMGuiController()
             vector<ModRulesMainMenuItem *>items = gModRules.menu.main;
 
             int numItems = (int)items.size();
-            float startX = 80.f;
+            float startX = 120.f * SCALE;
             float totalSize = SCREEN_WIDTH_F - (2 * startX);
             float space = 0;
             if (numItems < 2)
@@ -468,8 +468,8 @@ void GameStateMenu::ensureMGuiController()
                 int iconId = (item->mIconId - 1) * 2;
                 mGuiController->Add(NEW MenuItem(
                     item->mActionId, 
-                    mFont, item->mDisplayName, 
-                    startX + (i * space), 40 + SCREEN_HEIGHT / 2, 
+                    mFont, item->mDisplayName,
+                    startX + (i * space), SCREEN_HEIGHT_F / 2,
                     mIcons[iconId].get(), mIcons[iconId + 1].get(),
                     item->mParticleFile.c_str(), WResourceManager::Instance()->GetQuad("particles").get(),
                     (i == 0)));
@@ -865,7 +865,7 @@ void GameStateMenu::Render()
         scroller->Render();
 
         if (mBg.get())
-            renderer->RenderQuad(mBg.get(), SCREEN_WIDTH_F/2, 2, 0, 256 / mBg->mWidth, 166 / mBg->mHeight);
+            renderer->RenderQuad(mBg.get(), SCREEN_WIDTH_F/2, 2, 0, (256 * SCALE) / mBg->mWidth, (166 * SCALE) / mBg->mHeight);
 
         RenderTopMenu();
         

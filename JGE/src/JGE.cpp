@@ -744,3 +744,12 @@ void JGE::sendJNICommand(string command)
 
 std::queue< pair< pair<LocalKeySym, JButton>, bool> > JGE::keyBuffer;
 std::multimap<LocalKeySym, JButton> JGE::keyBinds;
+
+// Screen dimensions - set at runtime from Android surface
+int JGE::mScreenWidth  = 1280;
+int JGE::mScreenHeight = 720;
+
+void JGE::SetScreenWidth(int w)  { mScreenWidth = w; }
+void JGE::SetScreenHeight(int h) { mScreenHeight = h; }
+int  JGE::GetScreenWidth()       { return mScreenWidth; }
+int  JGE::GetScreenHeight()      { return mScreenHeight; }
