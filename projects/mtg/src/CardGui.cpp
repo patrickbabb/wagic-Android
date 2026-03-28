@@ -142,16 +142,16 @@ void CardGui::Render()
         tc = game->getCurrentTargetChooser();
 
     bool alternate = true;
-    JQuadPtr quad = game? game->getResourceManager()->RetrieveCard(card, CACHE_THUMB):WResourceManager::Instance()->RetrieveCard(card, CACHE_THUMB);
+    JQuadPtr quad = game? game->getResourceManager()->RetrieveCard(card, CACHE_NORMAL):WResourceManager::Instance()->RetrieveCard(card, CACHE_NORMAL);
     if(card && !card->isToken && card->name != card->model->data->name)
     {
         MTGCard * fcard = MTGCollection()->getCardByName(card->name);
-        quad = game->getResourceManager()->RetrieveCard(fcard, CACHE_THUMB);
+        quad = game->getResourceManager()->RetrieveCard(fcard, CACHE_NORMAL);
     }
     if (game && card->hasCopiedToken && !quad.get())
     {
         MTGCard * tcard = MTGCollection()->getCardById(abs(card->copiedID));
-        quad = game->getResourceManager()->RetrieveCardToken(tcard, CACHE_THUMB, 1, abs(card->copiedID));
+        quad = game->getResourceManager()->RetrieveCardToken(tcard, CACHE_NORMAL, 1, abs(card->copiedID));
     }
     if (quad.get())
         alternate = false;
