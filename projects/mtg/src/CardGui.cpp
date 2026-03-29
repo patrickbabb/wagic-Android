@@ -26,8 +26,8 @@ const float CardGui::Height    = 106.0f;
 const float CardGui::BigWidth  = 400.0f;   // conservative, ~half screen width
 const float CardGui::BigHeight = 570.0f;   // ~80% screen height
 
-static float kCardScale = 0.0f;
-static float kPSPScale  = 0.0f;
+static float kCardScale = SCREEN_HEIGHT / 272.0f;
+static float kPSPScale  = 16.0f / (SCREEN_HEIGHT / 272.0f);
 
 const float kWidthScaleFactor = 0.8f * (SCREEN_HEIGHT / 272.0f);
 
@@ -1252,11 +1252,13 @@ void CardGui::TinyCropRender(MTGCard * card, const Pos& pos, JQuad * quad)
 //Renders a big card on screen. Defaults to the "alternate" rendering if no image is found
 void CardGui::RenderBig(MTGCard* card, const Pos& pos, bool thumb, bool noborder, bool gdv)
 {
+    // Ensure scale factors are initialized even if Render() hasn't been called yet
+    if (kCardScale == 0.0f) {
+        kCardScale = SCREEN_HEIGHT / 272.0f;
+        kPSPScale  = 16.0f / kCardScale;
+    }
+
     JRenderer * renderer = JRenderer::GetInstance();
-    //GameObserver * game = GameObserver::GetInstance();
-    //if((MTGCard*)game->mLayers->actionLayer()->currentActionCard != NULL)
-    //    card = (MTGCard*)game->mLayers->actionLayer()->currentActionCard;
-    //i want this but ai targets cards so quickly that it can crash the game.
     float x = pos.actX;
     JQuadPtr alphabeta = WResourceManager::Instance()->RetrieveTempQuad("alphabeta.png");
     JQuadPtr quad = thumb ? WResourceManager::Instance()->RetrieveCard(card, RETRIEVE_THUMB)
