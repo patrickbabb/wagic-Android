@@ -137,9 +137,9 @@ public class SDLActivity extends Activity implements OnKeyListener {
     public String mErrorMessage = "";
     public Boolean mErrorHappened = false;
     public String systemFolder = Environment.getExternalStorageDirectory()
-                                            .getPath() + "/Wagic/Res/";
+            .getPath() + "/Wagic/Res/";
     private String userFolder = Environment.getExternalStorageDirectory()
-                                           .getPath() + "/Wagic/User/";
+            .getPath() + "/Wagic/User/";
 
     // path to the onboard sd card that is not removable (typically /mnt/sdcard )
     private String internalPath = "";
@@ -176,14 +176,14 @@ public class SDLActivity extends Activity implements OnKeyListener {
 
     // Handler for the messages
     Handler commandHandler = new Handler() {
-            public void handleMessage(Message msg) {
-                if (msg.arg1 == COMMAND_CHANGE_TITLE) {
-                    setTitle((String) msg.obj);
-                } else if (msg.arg1 == COMMAND_JGE_MSG) {
-                    processJGEMsg((String) msg.obj);
-                }
+        public void handleMessage(Message msg) {
+            if (msg.arg1 == COMMAND_CHANGE_TITLE) {
+                setTitle((String) msg.obj);
+            } else if (msg.arg1 == COMMAND_JGE_MSG) {
+                processJGEMsg((String) msg.obj);
             }
-        };
+        }
+    };
 
     // Accessors
     public String getSystemStorageLocation() {
@@ -198,14 +198,14 @@ public class SDLActivity extends Activity implements OnKeyListener {
     public void updateStorageLocations() {
         boolean usesInternalSdCard = (!getSharedPreferences(kWagicSharedPreferencesKey,
                 MODE_PRIVATE)
-                                           .getBoolean(kStoreDataOnRemovableSdCardPreference,
-                false)) &&
-            Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
+                .getBoolean(kStoreDataOnRemovableSdCardPreference,
+                        false)) &&
+                Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState());
 
         systemFolder = (usesInternalSdCard ? internalPath : sdcardPath) +
-            "/Res/";
+                "/Res/";
         userFolder = (usesInternalSdCard ? internalPath : sdcardPath) +
-            "/User/";
+                "/User/";
     }
 
     /**
@@ -266,7 +266,7 @@ public class SDLActivity extends Activity implements OnKeyListener {
     private void displayStorageOptions() {
         AlertDialog.Builder setStorage = new AlertDialog.Builder(this);
         setStorage.setTitle(
-            "Where would you like to store your data? On your removable SD Card or the built-in memory?");
+                "Where would you like to store your data? On your removable SD Card or the built-in memory?");
         StorageOptions.determineStorageOptions(mContext);
 
         SharedPreferences settings = getSharedPreferences(kWagicSharedPreferencesKey,
@@ -283,22 +283,22 @@ public class SDLActivity extends Activity implements OnKeyListener {
         }
 
         setStorage.setSingleChoiceItems(StorageOptions.labels, selectedIndex,
-            new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int item) {
-                    savePathPreference(item);
-                }
-            });
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        savePathPreference(item);
+                    }
+                });
 
         setStorage.setPositiveButton("OK",
-            new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    initStorage();
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        initStorage();
 
-                    if (mSurface == null) {
-                        mSingleton.initializeGame();
+                        if (mSurface == null) {
+                            mSingleton.initializeGame();
+                        }
                     }
-                }
-            });
+                });
 
         setStorage.create().show();
     }
@@ -308,18 +308,18 @@ public class SDLActivity extends Activity implements OnKeyListener {
         importDeck.setTitle("Choose Deck to Import:");
 
         File root = new File(System.getenv("EXTERNAL_STORAGE") + "/Download");
-	File[] files = root.listFiles();
+        File[] files = root.listFiles();
 
         if (files != null) {
-			for (File f : files) {
-				if (!myresult.contains(f.toString()) &&
-						(f.toString().contains(".txt") ||
-						 f.toString().contains(".dck") ||
-						 f.toString().contains(".dec"))) {
-					myresult.add(f.toString());
-				}
-			}
-		}  
+            for (File f : files) {
+                if (!myresult.contains(f.toString()) &&
+                        (f.toString().contains(".txt") ||
+                                f.toString().contains(".dck") ||
+                                f.toString().contains(".dec"))) {
+                    myresult.add(f.toString());
+                }
+            }
+        }
 
         //get first item?
         if (!myresult.isEmpty()) {
@@ -327,23 +327,23 @@ public class SDLActivity extends Activity implements OnKeyListener {
         }
 
         importDeck.setSingleChoiceItems(myresult.toArray(
-                new String[myresult.size()]), 0,
-            new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int item) {
-                    myclickedItem = myresult.get(item).toString();
-                }
-            });
+                        new String[myresult.size()]), 0,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        myclickedItem = myresult.get(item).toString();
+                    }
+                });
 
         importDeck.setPositiveButton("Import Deck",
-            new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    processSelectedDeck(myclickedItem);
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        processSelectedDeck(myclickedItem);
 
-                    if (mSurface == null) {
-                        mSingleton.initializeGame();
+                        if (mSurface == null) {
+                            mSingleton.initializeGame();
+                        }
                     }
-                }
-            });
+                });
 
         importDeck.create().show();
     }
@@ -377,7 +377,7 @@ public class SDLActivity extends Activity implements OnKeyListener {
                 displayStorageOptions();
             } else {
                 prefsEditor.putBoolean(kStoreDataOnRemovableSdCardPreference,
-                    false);
+                        false);
                 prefsEditor.commit();
                 initStorage();
                 mSingleton.initializeGame();
@@ -390,10 +390,10 @@ public class SDLActivity extends Activity implements OnKeyListener {
                 AlertDialog setStorage = new AlertDialog.Builder(this).create();
                 setStorage.setTitle("Storage Preference");
                 setStorage.setMessage(
-                    "Removable Sd Card not detected.  Saving data to internal memory.");
+                        "Removable Sd Card not detected.  Saving data to internal memory.");
 
                 prefsEditor.putBoolean(kStoreDataOnRemovableSdCardPreference,
-                    false);
+                        false);
                 prefsEditor.commit();
 
                 initStorage();
@@ -445,8 +445,8 @@ public class SDLActivity extends Activity implements OnKeyListener {
 
                 if (!wagicMediaPath.exists() || !wagicMediaPath.canWrite()) {
                     Log.e(TAG,
-                        "Error in initializing system folder: " +
-                        selectedRemovableCardPath);
+                            "Error in initializing system folder: " +
+                                    selectedRemovableCardPath);
                 } else { // found a removable media location
                     sdcardPath = selectedRemovableCardPath + "/Wagic";
                 }
@@ -466,7 +466,7 @@ public class SDLActivity extends Activity implements OnKeyListener {
         boolean saveToRemovableMedia = !"/mnt/sdcard".equalsIgnoreCase(selectedMediaPath);
 
         prefsEditor.putBoolean(kStoreDataOnRemovableSdCardPreference,
-            saveToRemovableMedia);
+                saveToRemovableMedia);
         prefsEditor.putString(kSaveDataPathPreference, selectedMediaPath);
         prefsEditor.commit();
     }
@@ -477,7 +477,7 @@ public class SDLActivity extends Activity implements OnKeyListener {
         if (!checkStorageState()) {
             Log.e(TAG, "Error in initializing storage space.");
             mSingleton.downloadError(
-                "Failed to initialize storage space for game. Please verify that your sdcard or internal memory is mounted properly.");
+                    "Failed to initialize storage space for game. Please verify that your sdcard or internal memory is mounted properly.");
         }
 
         new DownloadFileAsync().execute(url);
@@ -493,7 +493,7 @@ public class SDLActivity extends Activity implements OnKeyListener {
 
         for (int idx = 0; idx < StorageOptions.count; idx++) {
             menu.add(kStorageDataOptionsMenuId,
-                kStorageDataOptionsMenuId + idx, idx, StorageOptions.labels[idx]);
+                    kStorageDataOptionsMenuId + idx, idx, StorageOptions.labels[idx]);
         }
     }
 
@@ -504,87 +504,87 @@ public class SDLActivity extends Activity implements OnKeyListener {
         progressBarDialogRes.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressBarDialogRes.setProgress(0);
         new Thread(new Runnable() {
-                public void run() {
-                    ArrayList<String> sets = new ArrayList<String>();
+            public void run() {
+                ArrayList<String> sets = new ArrayList<String>();
 
-                    if (availableSets == null) {
-                        loadResInProgress = true;
+                if (availableSets == null) {
+                    loadResInProgress = true;
 
-                        File baseFolder = new File(getSystemStorageLocation());
-                        File[] listOfFiles = baseFolder.listFiles();
-                        ZipFile zipFile = null;
+                    File baseFolder = new File(getSystemStorageLocation());
+                    File[] listOfFiles = baseFolder.listFiles();
+                    ZipFile zipFile = null;
 
-                        try {
-                            zipFile = new ZipFile(baseFolder + "/" +
-                                    RES_FILENAME);
+                    try {
+                        zipFile = new ZipFile(baseFolder + "/" +
+                                RES_FILENAME);
 
-                            Enumeration<?extends ZipEntry> e = zipFile.entries();
+                        Enumeration<?extends ZipEntry> e = zipFile.entries();
 
-                            while (e.hasMoreElements()) {
-                                ZipEntry entry = e.nextElement();
-                                String entryName = entry.getName();
+                        while (e.hasMoreElements()) {
+                            ZipEntry entry = e.nextElement();
+                            String entryName = entry.getName();
 
-                                if ((entryName != null) &&
-                                        entryName.contains("sets/")) {
-                                    if (!entryName.equalsIgnoreCase("sets/") &&
-                                            !entryName.contains("primitives") &&
-                                            !entryName.contains(".")) {
-                                        String[] names = entryName.split("/");
-                                        sets.add(names[1]);
-                                    }
+                            if ((entryName != null) &&
+                                    entryName.contains("sets/")) {
+                                if (!entryName.equalsIgnoreCase("sets/") &&
+                                        !entryName.contains("primitives") &&
+                                        !entryName.contains(".")) {
+                                    String[] names = entryName.split("/");
+                                    sets.add(names[1]);
                                 }
-                            }
-                        } catch (IOException ioe) {
-                            System.out.println("Error opening zip file" + ioe);
-                        } finally {
-                            try {
-                                if (zipFile != null) {
-                                    zipFile.close();
-                                }
-                            } catch (IOException ioe) {
-                                System.out.println(
-                                    "Error while closing zip file" + ioe);
                             }
                         }
-
-                        availableSets = new String[sets.size()];
-                        checkedSet = new boolean[sets.size()];
-                        progressBarDialogRes.setMax(sets.size());
-
-                        for (int i = 0; i < availableSets.length; i++) {
-                            availableSets[i] = sets.get(i) + " - " +
-                                ImgDownloader.getSetInfo(sets.get(i), true,
-                                    getSystemStorageLocation());
-                            checkedSet[i] = false;
-                            progressBarDialogRes.incrementProgressBy((int) (1));
+                    } catch (IOException ioe) {
+                        System.out.println("Error opening zip file" + ioe);
+                    } finally {
+                        try {
+                            if (zipFile != null) {
+                                zipFile.close();
+                            }
+                        } catch (IOException ioe) {
+                            System.out.println(
+                                    "Error while closing zip file" + ioe);
                         }
                     }
 
-                    finished = true;
-                    loadResInProgress = false;
-                    progressBarDialogRes.dismiss();
-                    mHandler.post(new Runnable() {
-                            public void run() {
-                                while (!finished) {
-                                    try {
-                                        Thread.sleep(1000);
-                                    } catch (Exception e) {
-                                    }
-                                }
+                    availableSets = new String[sets.size()];
+                    checkedSet = new boolean[sets.size()];
+                    progressBarDialogRes.setMax(sets.size());
 
-                                selectedSets = new ArrayList<String>();
-                                showWarningFast();
-                            }
-                        });
+                    for (int i = 0; i < availableSets.length; i++) {
+                        availableSets[i] = sets.get(i) + " - " +
+                                ImgDownloader.getSetInfo(sets.get(i), true,
+                                        getSystemStorageLocation());
+                        checkedSet[i] = false;
+                        progressBarDialogRes.incrementProgressBy((int) (1));
+                    }
                 }
-            }).start();
+
+                finished = true;
+                loadResInProgress = false;
+                progressBarDialogRes.dismiss();
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        while (!finished) {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (Exception e) {
+                            }
+                        }
+
+                        selectedSets = new ArrayList<String>();
+                        showWarningFast();
+                    }
+                });
+            }
+        }).start();
 
         new Thread(new Runnable() {
-                public void run() {
-                    fast = ImgDownloader.loadDatabase(getSystemStorageLocation(),
-                            databaseurl);
-                }
-            }).start();
+            public void run() {
+                fast = ImgDownloader.loadDatabase(getSystemStorageLocation(),
+                        databaseurl);
+            }
+        }).start();
 
         progressBarDialogRes.show();
     }
@@ -595,28 +595,28 @@ public class SDLActivity extends Activity implements OnKeyListener {
         if (!fast) {
             infoDialog.setTitle("Problem downloading the images database file");
             infoDialog.setMessage(
-                "The program will use the slow (not indexed) method, so the images download may take really long time...");
+                    "The program will use the slow (not indexed) method, so the images download may take really long time...");
 
             infoDialog.setNegativeButton("Retry",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        fast = ImgDownloader.loadDatabase(getSystemStorageLocation(),
-                                databaseurl);
-                        showWarningFast();
-                    }
-                });
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            fast = ImgDownloader.loadDatabase(getSystemStorageLocation(),
+                                    databaseurl);
+                            showWarningFast();
+                        }
+                    });
         } else {
             infoDialog.setTitle("Images Database correctly downloaded");
             infoDialog.setMessage(
-                "The program will use the fast (indexed) method, so the images download will not take long time!");
+                    "The program will use the fast (indexed) method, so the images download will not take long time!");
         }
 
         infoDialog.setPositiveButton("Continue",
-            new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    downloadCardImages();
-                }
-            });
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        downloadCardImages();
+                    }
+                });
 
         infoDialog.create().show();
     }
@@ -626,51 +626,51 @@ public class SDLActivity extends Activity implements OnKeyListener {
         cardDownloader.setTitle("Which Sets would you like to download?");
 
         cardDownloader.setMultiChoiceItems(availableSets, checkedSet,
-            new DialogInterface.OnMultiChoiceClickListener() {
-                public void onClick(DialogInterface dialog, int which,
-                    boolean isChecked) {
-                    checkedSet[which] = isChecked;
+                new DialogInterface.OnMultiChoiceClickListener() {
+                    public void onClick(DialogInterface dialog, int which,
+                                        boolean isChecked) {
+                        checkedSet[which] = isChecked;
 
-                    if (checkedSet[which]) {
-                        selectedSets.add(availableSets[which].split(" - ")[0]);
-                    } else {
-                        selectedSets.remove(availableSets[which].split(" - ")[0]);
+                        if (checkedSet[which]) {
+                            selectedSets.add(availableSets[which].split(" - ")[0]);
+                        } else {
+                            selectedSets.remove(availableSets[which].split(" - ")[0]);
+                        }
                     }
-                }
-            });
+                });
 
         cardDownloader.setNeutralButton("Download All",
-            new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    selectedSets.clear();
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        selectedSets.clear();
 
-                    for (int i = 0; i < availableSets.length; i++) {
-                        selectedSets.add(availableSets[i].split(" - ")[0]);
+                        for (int i = 0; i < availableSets.length; i++) {
+                            selectedSets.add(availableSets[i].split(" - ")[0]);
+                        }
+
+                        chooseResolution();
                     }
-
-                    chooseResolution();
-                }
-            });
+                });
 
         cardDownloader.setPositiveButton("Download Selected",
-            new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
-            });
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
 
         final AlertDialog dialog = cardDownloader.create();
         dialog.show();
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (selectedSets.size() > 0) {
-                        chooseResolution();
-                        dialog.dismiss();
-                    }
+            @Override
+            public void onClick(View v) {
+                if (selectedSets.size() > 0) {
+                    chooseResolution();
+                    dialog.dismiss();
                 }
-            });
+            }
+        });
     }
 
     private void chooseResolution() {
@@ -683,29 +683,29 @@ public class SDLActivity extends Activity implements OnKeyListener {
                 "Medium - (488x680)", "Medium - (488x680) - Borderless",
                 "Low - (244x340)", "Low - (244x340) - Borderless",
                 "Tiny - (180x255)", "Tiny - (180x255) - Borderless"
-            };
+        };
 
         resChooser.setSingleChoiceItems(availableRes, 0,
-            new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int item) {
-                    targetRes = availableRes[item].split(" - ")[0];
-                    borderless = (availableRes[item].split(" - ").length > 2);
-                }
-            });
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        targetRes = availableRes[item].split(" - ")[0];
+                        borderless = (availableRes[item].split(" - ").length > 2);
+                    }
+                });
 
         resChooser.setPositiveButton("Start Download",
-            new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    skipDownloadedSets();
-                }
-            });
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        skipDownloadedSets();
+                    }
+                });
 
         resChooser.setNegativeButton("Change Selection",
-            new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    downloadCardImages();
-                }
-            });
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        downloadCardImages();
+                    }
+                });
 
         resChooser.create().show();
     }
@@ -716,20 +716,20 @@ public class SDLActivity extends Activity implements OnKeyListener {
         skipChooser.setTitle("Do you want to overwrite existing sets?");
 
         skipChooser.setPositiveButton("Yes",
-            new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    skipDownloaded = false;
-                    downloadCardImagesStart();
-                }
-            });
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        skipDownloaded = false;
+                        downloadCardImagesStart();
+                    }
+                });
 
         skipChooser.setNegativeButton("No",
-            new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    skipDownloaded = true;
-                    downloadCardImagesStart();
-                }
-            });
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        skipDownloaded = true;
+                        downloadCardImagesStart();
+                    }
+                });
 
         skipChooser.create().show();
     }
@@ -744,156 +744,156 @@ public class SDLActivity extends Activity implements OnKeyListener {
 
         if (selectedSets.size() == 1) {
             cardDownloader.setMessage(
-                "You choose to download just 1 set: Please don't quit Wagic or turn off Internet connection, you can hide this window and continue to play, a pop-up will notify the completion of download process.");
+                    "You choose to download just 1 set: Please don't quit Wagic or turn off Internet connection, you can hide this window and continue to play, a pop-up will notify the completion of download process.");
         } else {
             cardDownloader.setMessage("You choose to download " +
-                selectedSets.size() +
-                " sets: Please don't quit Wagic or turn off Internet connection, you can hide this window and continue to play, a pop-up will notify the completion of download process.");
+                    selectedSets.size() +
+                    " sets: Please don't quit Wagic or turn off Internet connection, you can hide this window and continue to play, a pop-up will notify the completion of download process.");
         }
 
         new Thread(new Runnable() {
-                public void run() {
-                    downloadInProgress = true;
-                    paused = false;
+            public void run() {
+                downloadInProgress = true;
+                paused = false;
 
-                    if (selectedSets != null) {
-                        for (currentIndex = 0;
-                                (currentIndex < selectedSets.size()) &&
-                                downloadInProgress; currentIndex++) {
-                            while (paused) {
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException e) {
-                                }
-
-                                if (!downloadInProgress) {
-                                    break;
-                                }
+                if (selectedSets != null) {
+                    for (currentIndex = 0;
+                         (currentIndex < selectedSets.size()) &&
+                                 downloadInProgress; currentIndex++) {
+                        while (paused) {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
                             }
 
-                            try {
-                                set = selectedSets.get(currentIndex);
-                                mHandler.post(new Runnable() {
-                                        public void run() {
-                                            cardDownloader.setTitle(
-                                                "Downloading set: " + set +
-                                                " (" + (currentIndex + 1) +
-                                                " of " + selectedSets.size() +
-                                                ")");
-                                        }
-                                    });
-
-                                String details = ImgDownloader.DownloadCardImages(set,
-                                        availableSets, targetRes,
-                                        getSystemStorageLocation(),
-                                        getUserStorageLocation() + "sets/",
-                                        cardDownloader, parent, skipDownloaded,
-                                        borderless);
-
-                                if (!details.isEmpty()) {
-                                    if (!res.isEmpty()) {
-                                        res = res + "\nSET " + set + ":\n" +
-                                            details;
-                                    } else {
-                                        res = "SET " + set + ":\n" + details;
-                                    }
-                                }
-                            } catch (Exception e) {
-                                res = res + "\n" + e.getMessage();
-                                error = true;
+                            if (!downloadInProgress) {
+                                break;
                             }
                         }
 
-                        mHandler.post(new Runnable() {
+                        try {
+                            set = selectedSets.get(currentIndex);
+                            mHandler.post(new Runnable() {
                                 public void run() {
-                                    if (downloadInProgress) {
-                                        downloadSelectedSetsCompleted(error, res);
-                                        downloadInProgress = false;
-                                        paused = false;
-                                    }
-
-                                    cardDownloader.dismiss();
+                                    cardDownloader.setTitle(
+                                            "Downloading set: " + set +
+                                                    " (" + (currentIndex + 1) +
+                                                    " of " + selectedSets.size() +
+                                                    ")");
                                 }
                             });
+
+                            String details = ImgDownloader.DownloadCardImages(set,
+                                    availableSets, targetRes,
+                                    getSystemStorageLocation(),
+                                    getUserStorageLocation() + "sets/",
+                                    cardDownloader, parent, skipDownloaded,
+                                    borderless);
+
+                            if (!details.isEmpty()) {
+                                if (!res.isEmpty()) {
+                                    res = res + "\nSET " + set + ":\n" +
+                                            details;
+                                } else {
+                                    res = "SET " + set + ":\n" + details;
+                                }
+                            }
+                        } catch (Exception e) {
+                            res = res + "\n" + e.getMessage();
+                            error = true;
+                        }
                     }
+
+                    mHandler.post(new Runnable() {
+                        public void run() {
+                            if (downloadInProgress) {
+                                downloadSelectedSetsCompleted(error, res);
+                                downloadInProgress = false;
+                                paused = false;
+                            }
+
+                            cardDownloader.dismiss();
+                        }
+                    });
                 }
-            }).start();
+            }
+        }).start();
 
         cardDownloader.setButton(DialogInterface.BUTTON_POSITIVE, "Hide",
-            new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    cardDownloader.hide();
-                }
-            });
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        cardDownloader.hide();
+                    }
+                });
 
         cardDownloader.setButton(DialogInterface.BUTTON_NEGATIVE, "Stop",
-            new DialogInterface.OnClickListener() {
-                public void onClick(final DialogInterface dialog, int which) {
-                    mHandler.post(new Runnable() {
+                new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, int which) {
+                        mHandler.post(new Runnable() {
                             public void run() {
                                 downloadCardInterruped(set,
-                                    cardDownloader.getProgress(),
-                                    cardDownloader.getMax());
+                                        cardDownloader.getProgress(),
+                                        cardDownloader.getMax());
                                 downloadInProgress = false;
                                 paused = false;
 
                                 AlertDialog d = (AlertDialog) dialog;
                                 d.getButton(AlertDialog.BUTTON_NEUTRAL)
-                                 .setText("Pause");
+                                        .setText("Pause");
                                 cardDownloader.setTitle("Downloading now set: " +
-                                    set + " - Interrupted");
+                                        set + " - Interrupted");
                                 cardDownloader.dismiss();
                             }
                         });
-                }
-            });
+                    }
+                });
 
         cardDownloader.setButton(DialogInterface.BUTTON_NEUTRAL, "Pause",
-            new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
-            });
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
 
         final AlertDialog dialog = (AlertDialog) cardDownloader;
         cardDownloader.show();
 
         dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!paused) {
-                        paused = true;
+            @Override
+            public void onClick(View v) {
+                if (!paused) {
+                    paused = true;
 
-                        AlertDialog d = (AlertDialog) dialog;
-                        d.getButton(AlertDialog.BUTTON_NEUTRAL).setText("Resume");
-                        cardDownloader.setTitle("Downloading now set: " + set +
+                    AlertDialog d = (AlertDialog) dialog;
+                    d.getButton(AlertDialog.BUTTON_NEUTRAL).setText("Resume");
+                    cardDownloader.setTitle("Downloading now set: " + set +
                             " - Paused");
-                    } else {
-                        paused = false;
+                } else {
+                    paused = false;
 
-                        AlertDialog d = (AlertDialog) dialog;
-                        d.getButton(AlertDialog.BUTTON_NEUTRAL).setText("Pause");
-                        cardDownloader.setTitle("Downloading now set: " + set);
-                    }
+                    AlertDialog d = (AlertDialog) dialog;
+                    d.getButton(AlertDialog.BUTTON_NEUTRAL).setText("Pause");
+                    cardDownloader.setTitle("Downloading now set: " + set);
                 }
-            });
+            }
+        });
     }
 
     private void downloadCardInterruped(String set, int cardsDownloaded,
-        int total) {
+                                        int total) {
         AlertDialog.Builder infoDialog = new AlertDialog.Builder(this);
         infoDialog.setTitle("Download of " + set + " has been interrupted!");
         infoDialog.setMessage("WARNING: Only " + cardsDownloaded + " of " +
-            total + " total cards have been downloaded and zip archive (" +
-            set +
-            ".zip) has not been created. You have to start the download again in order to complete the entire set.");
+                total + " total cards have been downloaded and zip archive (" +
+                set +
+                ".zip) has not been created. You have to start the download again in order to complete the entire set.");
 
         infoDialog.setPositiveButton("OK",
-            new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    downloadCardImages();
-                }
-            });
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        downloadCardImages();
+                    }
+                });
 
         res = "";
         set = "";
@@ -917,11 +917,11 @@ public class SDLActivity extends Activity implements OnKeyListener {
 
         if (!error) {
             infoDialog.setTitle(
-                "The download process has completed without any error");
+                    "The download process has completed without any error");
 
             if (!res.isEmpty()) {
                 infoDialog.setMessage(
-                    "Following cards could not be downloaded:\n" + res);
+                        "Following cards could not be downloaded:\n" + res);
             }
         } else {
             infoDialog.setTitle("Some errors occurred during the process!");
@@ -999,8 +999,8 @@ public class SDLActivity extends Activity implements OnKeyListener {
             AlertDialog.Builder infoDialog = new AlertDialog.Builder(this);
             infoDialog.setTitle("Wagic Info");
             infoDialog.setMessage("Version: " +
-                getResources().getString(R.string.app_version) + "\r\n" +
-                getResources().getString(R.string.info_text));
+                    getResources().getString(R.string.app_version) + "\r\n" +
+                    getResources().getString(R.string.info_text));
             infoDialog.show();
         } else {
             return super.onOptionsItemSelected(item);
@@ -1014,19 +1014,19 @@ public class SDLActivity extends Activity implements OnKeyListener {
         builder.setTitle("Settings Menu");
         String[] choices = { "Storage Data Options", "Download Core & Quit" };
         builder.setItems(choices,
-            new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which) {
-                        case 0:
-                            onOptionsItemSelected(storage);
-                            break;
-                        case 1:
-                            onOptionsItemSelected(resource);
-                            break;
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                onOptionsItemSelected(storage);
+                                break;
+                            case 1:
+                                onOptionsItemSelected(resource);
+                                break;
+                        }
                     }
-                }
-            });
+                });
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -1036,25 +1036,25 @@ public class SDLActivity extends Activity implements OnKeyListener {
         builder.setTitle("Options Menu");
         String[] choices = { "Settings", "Import Decks", "Download Cards", "About" };
         builder.setItems(choices,
-            new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    switch (which) {
-                        case 0:
-                            showSettingsSubMenu();
-                            break;
-                        case 1:
-                            onOptionsItemSelected(importDecks);
-                            break;
-                        case 2:
-                            onOptionsItemSelected(downloader);
-                            break;
-                        case 3:
-                            onOptionsItemSelected(about);
-                            break;
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                showSettingsSubMenu();
+                                break;
+                            case 1:
+                                onOptionsItemSelected(importDecks);
+                                break;
+                            case 2:
+                                onOptionsItemSelected(downloader);
+                                break;
+                            case 3:
+                                onOptionsItemSelected(about);
+                                break;
+                        }
                     }
-                }
-            });
+                });
         AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -1062,35 +1062,35 @@ public class SDLActivity extends Activity implements OnKeyListener {
     @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
-        case DIALOG_DOWNLOAD_PROGRESS:
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage("Downloading resource files (" +
-                RES_FILENAME + ")");
-            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            mProgressDialog.setCancelable(false);
-            mProgressDialog.show();
+            case DIALOG_DOWNLOAD_PROGRESS:
+                mProgressDialog = new ProgressDialog(this);
+                mProgressDialog.setMessage("Downloading resource files (" +
+                        RES_FILENAME + ")");
+                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                mProgressDialog.setCancelable(false);
+                mProgressDialog.show();
 
-            return mProgressDialog;
+                return mProgressDialog;
 
-        case DIALOG_DOWNLOAD_ERROR:
+            case DIALOG_DOWNLOAD_ERROR:
 
-            // prepare alertDialog
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(mErrorMessage).setCancelable(false).setPositiveButton("Exit",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        System.exit(0);
-                    }
-                });
+                // prepare alertDialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(mErrorMessage).setCancelable(false).setPositiveButton("Exit",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                System.exit(0);
+                            }
+                        });
 
 
-            mErrorDialog = builder.create();
-            mErrorDialog.show();
+                mErrorDialog = builder.create();
+                mErrorDialog.show();
 
-            return mErrorDialog;
+                return mErrorDialog;
 
-        default:
-            return null;
+            default:
+                return null;
         }
     }
 
@@ -1108,48 +1108,48 @@ public class SDLActivity extends Activity implements OnKeyListener {
         holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 
         _videoLayout.addView(mSurface,
-            new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+                new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         // mGLView.setFocusableInTouchMode(true);
         // mGLView.setFocusable(true);
         // adView.requestFreshAd();
         setContentView(_videoLayout,
-            new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+                new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         mSurface.requestFocus();
     }
 
     // Setup
-	private void enterImmersiveMode() {
-		final View decorView = getWindow().getDecorView();
-		decorView.setSystemUiVisibility(
-			View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-			| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-			| View.SYSTEM_UI_FLAG_FULLSCREEN
-			| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-			| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-			| View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-		);
-	}
-	
-	@Override
-		public void onWindowFocusChanged(boolean hasFocus) {
-			super.onWindowFocusChanged(hasFocus);
-			if (hasFocus) {
-				enterImmersiveMode();
-			}
-		}
+    private void enterImmersiveMode() {
+        final View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        );
+    }
 
-	
     @Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            enterImmersiveMode();
+        }
+    }
 
-		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-		StrictMode.setThreadPolicy(policy);
 
-		setContentView(R.layout.main);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		// Enable immersive mode
-		enterImmersiveMode();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        setContentView(R.layout.main);
+
+        // Enable immersive mode
+        enterImmersiveMode();
 
         // Hide camera cutout
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -1157,16 +1157,17 @@ public class SDLActivity extends Activity implements OnKeyListener {
                     WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
         }
 
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-		// So we can call stuff from static callbacks
-		mSingleton = this;
-		mContext = this.getApplicationContext();
-		RES_FILENAME = getResourceName();
-		StorageOptions.determineStorageOptions(mContext);
-		checkStorageLocationPreference();
-		prepareOptionMenu(null);
-}
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        // So we can call stuff from static callbacks
+        mSingleton = this;
+        mContext = this.getApplicationContext();
+        RES_FILENAME = getResourceName();
+        StorageOptions.determineStorageOptions(mContext);
+        checkStorageLocationPreference();
+        prepareOptionMenu(null);
+    }
 
     public void forceResDownload(final File oldRes) {
         AlertDialog.Builder resChooser = new AlertDialog.Builder(this);
@@ -1206,8 +1207,8 @@ public class SDLActivity extends Activity implements OnKeyListener {
         } else {
             FrameLayout _videoLayout = new FrameLayout(this);
             setContentView(_videoLayout,
-                new LayoutParams(LayoutParams.FILL_PARENT,
-                    LayoutParams.FILL_PARENT));
+                    new LayoutParams(LayoutParams.FILL_PARENT,
+                            LayoutParams.FILL_PARENT));
             startDownload();
         }
     }
@@ -1270,10 +1271,10 @@ public class SDLActivity extends Activity implements OnKeyListener {
     public static native void onNativeKeyUp(int keycode);
 
     public static native void onNativeTouch(int index, int action, float x,
-        float y, float p);
+                                            float y, float p);
 
     public static native void onNativeFlickGesture(float xVelocity,
-        float yVelocity);
+                                                   float yVelocity);
 
     public static native void onNativeAccel(float x, float y, float z);
 
@@ -1307,11 +1308,11 @@ public class SDLActivity extends Activity implements OnKeyListener {
     }
 
     public static Object audioInit(int sampleRate, boolean is16Bit,
-        boolean isStereo, int desiredFrames) {
+                                   boolean isStereo, int desiredFrames) {
         int channelConfig = isStereo ? AudioFormat.CHANNEL_CONFIGURATION_STEREO
-                                     : AudioFormat.CHANNEL_CONFIGURATION_MONO;
+                : AudioFormat.CHANNEL_CONFIGURATION_MONO;
         int audioFormat = is16Bit ? AudioFormat.ENCODING_PCM_16BIT
-                                  : AudioFormat.ENCODING_PCM_8BIT;
+                : AudioFormat.ENCODING_PCM_8BIT;
         int frameSize = (isStereo ? 2 : 1) * (is16Bit ? 2 : 1);
 
         // Log.d(TAG, "SDL audio: wanted " + (isStereo ? "stereo" : "mono") + " " + (is16Bit ? "16-bit" : "8-bit") + " " + ((float)sampleRate / 1000f) + "kHz, " + desiredFrames + " frames buffer");
@@ -1321,7 +1322,7 @@ public class SDLActivity extends Activity implements OnKeyListener {
         // latency already
         desiredFrames = Math.max(desiredFrames,
                 ((AudioTrack.getMinBufferSize(sampleRate, channelConfig,
-                    audioFormat) + frameSize) - 1) / frameSize);
+                        audioFormat) + frameSize) - 1) / frameSize);
 
         mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRate,
                 channelConfig, audioFormat, desiredFrames * frameSize,
@@ -1342,11 +1343,11 @@ public class SDLActivity extends Activity implements OnKeyListener {
 
     public static void audioStartThread() {
         mAudioThread = new Thread(new Runnable() {
-                    public void run() {
-                        mAudioTrack.play();
-                        nativeRunAudioThread();
-                    }
-                });
+            public void run() {
+                mAudioTrack.play();
+                nativeRunAudioThread();
+            }
+        });
 
         // I'd take REALTIME if I could get it!
         mAudioThread.setPriority(Thread.MAX_PRIORITY);
@@ -1475,13 +1476,13 @@ public class SDLActivity extends Activity implements OnKeyListener {
                 if ((!resDirectory.exists() && !resDirectory.mkdirs()) ||
                         (!userDirectory.exists() && !userDirectory.mkdirs())) {
                     throw new Exception(
-                        "Failed to initialize system and user directories.");
+                            "Failed to initialize system and user directories.");
                 }
 
                 URL url = new URL(aurl[0]);
                 String filename = url.getPath()
-                                     .substring(url.getPath().lastIndexOf('/') +
-                        1);
+                        .substring(url.getPath().lastIndexOf('/') +
+                                1);
                 URLConnection conexion = url.openConnection();
                 conexion.connect();
 
@@ -1507,8 +1508,8 @@ public class SDLActivity extends Activity implements OnKeyListener {
                 input.close();
             } catch (Exception e) {
                 String errorMessage = "An error happened while downloading the resources. It could be that our server is temporarily down, that your device is not connected to a network, or that we cannot write to " +
-                    mSingleton.getSystemStorageLocation() +
-                    ". Please check your phone settings and try again. For more help please go to http://wololo.net/forum/";
+                        mSingleton.getSystemStorageLocation() +
+                        ". Please check your phone settings and try again. For more help please go to http://wololo.net/forum/";
                 mSingleton.downloadError(errorMessage);
                 Log.e(TAG, errorMessage);
                 Log.e(TAG, e.getMessage());
@@ -1557,7 +1558,7 @@ public class SDLActivity extends Activity implements OnKeyListener {
  * Because of this, that's where we set up the SDL thread
  */
 class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
-    View.OnKeyListener, View.OnTouchListener, SensorEventListener {
+        View.OnKeyListener, View.OnTouchListener, SensorEventListener {
     private static final String TAG = SDLSurface.class.getCanonicalName();
 
     // Sensors
@@ -1596,7 +1597,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         setOnKeyListener(this);
         setOnTouchListener(this);
 
-        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        mSensorManager = (SensorManager) context.getSystemService("sensor");
         parent = app;
     }
 
@@ -1646,74 +1647,74 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
     // Called when the surface is resized
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
-        int height) {
+                               int height) {
         Log.d(TAG, "surfaceChanged()");
 
         int sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565 by default
 
         switch (format) {
-        case PixelFormat.A_8:
-            Log.d("TAG", "pixel format A_8");
+            case PixelFormat.A_8:
+                Log.d("TAG", "pixel format A_8");
 
-            break;
+                break;
 
-        case PixelFormat.LA_88:
-            Log.d("TAG", "pixel format LA_88");
+            case PixelFormat.LA_88:
+                Log.d("TAG", "pixel format LA_88");
 
-            break;
+                break;
 
-        case PixelFormat.L_8:
-            Log.d("TAG", "pixel format L_8");
+            case PixelFormat.L_8:
+                Log.d("TAG", "pixel format L_8");
 
-            break;
+                break;
 
-        case PixelFormat.RGBA_4444:
-            Log.d("TAG", "pixel format RGBA_4444");
-            sdlFormat = 0x85421002; // SDL_PIXELFORMAT_RGBA4444
+            case PixelFormat.RGBA_4444:
+                Log.d("TAG", "pixel format RGBA_4444");
+                sdlFormat = 0x85421002; // SDL_PIXELFORMAT_RGBA4444
 
-            break;
+                break;
 
-        case PixelFormat.RGBA_5551:
-            Log.d(TAG, "pixel format RGBA_5551");
-            sdlFormat = 0x85441002; // SDL_PIXELFORMAT_RGBA5551
+            case PixelFormat.RGBA_5551:
+                Log.d(TAG, "pixel format RGBA_5551");
+                sdlFormat = 0x85441002; // SDL_PIXELFORMAT_RGBA5551
 
-            break;
+                break;
 
-        case PixelFormat.RGBA_8888:
-            Log.d(TAG, "pixel format RGBA_8888");
-            sdlFormat = 0x86462004; // SDL_PIXELFORMAT_RGBA8888
+            case PixelFormat.RGBA_8888:
+                Log.d(TAG, "pixel format RGBA_8888");
+                sdlFormat = 0x86462004; // SDL_PIXELFORMAT_RGBA8888
 
-            break;
+                break;
 
-        case PixelFormat.RGBX_8888:
-            Log.d(TAG, "pixel format RGBX_8888");
-            sdlFormat = 0x86262004; // SDL_PIXELFORMAT_RGBX8888
+            case PixelFormat.RGBX_8888:
+                Log.d(TAG, "pixel format RGBX_8888");
+                sdlFormat = 0x86262004; // SDL_PIXELFORMAT_RGBX8888
 
-            break;
+                break;
 
-        case PixelFormat.RGB_332:
-            Log.d(TAG, "pixel format RGB_332");
-            sdlFormat = 0x84110801; // SDL_PIXELFORMAT_RGB332
+            case PixelFormat.RGB_332:
+                Log.d(TAG, "pixel format RGB_332");
+                sdlFormat = 0x84110801; // SDL_PIXELFORMAT_RGB332
 
-            break;
+                break;
 
-        case PixelFormat.RGB_565:
-            Log.d(TAG, "pixel format RGB_565");
-            sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565
+            case PixelFormat.RGB_565:
+                Log.d(TAG, "pixel format RGB_565");
+                sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565
 
-            break;
+                break;
 
-        case PixelFormat.RGB_888:
-            Log.d(TAG, "pixel format RGB_888");
-            // Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
-            sdlFormat = 0x86161804; // SDL_PIXELFORMAT_RGB888
+            case PixelFormat.RGB_888:
+                Log.d(TAG, "pixel format RGB_888");
+                // Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
+                sdlFormat = 0x86161804; // SDL_PIXELFORMAT_RGB888
 
-            break;
+                break;
 
-        default:
-            Log.d(TAG, "pixel format unknown " + format);
+            default:
+                Log.d(TAG, "pixel format unknown " + format);
 
-            break;
+                break;
         }
 
         SDLActivity.onNativeResize(width, height, sdlFormat);
@@ -1729,7 +1730,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     // EGL functions
     public boolean initEGL(int majorVersion, int minorVersion) {
         Log.d(TAG, "Starting up OpenGL ES " + majorVersion + "." +
-            minorVersion);
+                minorVersion);
 
         try {
             EGL10 egl = (EGL10) EGLContext.getEGL();
@@ -1752,7 +1753,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             int[] configSpec = {
                     // EGL10.EGL_DEPTH_SIZE, 16,
                     EGL10.EGL_RENDERABLE_TYPE, renderableType, EGL10.EGL_NONE
-                };
+            };
             EGLConfig[] configs = new EGLConfig[1];
             int[] num_config = new int[1];
 
@@ -1802,7 +1803,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
              * Unbind and destroy the old EGL surface, if there is one.
              */
             egl.eglMakeCurrent(mEGLDisplay, EGL10.EGL_NO_SURFACE,
-                EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_CONTEXT);
+                    EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_CONTEXT);
             egl.eglDestroySurface(mEGLDisplay, mEGLSurface);
         }
 
@@ -1822,7 +1823,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
          * Before we can issue GL commands, we need to make sure the context is current and bound to a surface.
          */
         if (!egl.eglMakeCurrent(mEGLDisplay, mEGLSurface, mEGLSurface,
-                    mEGLContext)) {
+                mEGLContext)) {
             Log.e(TAG, "Couldn't make context current");
 
             return false;
@@ -1947,11 +1948,11 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         // TODO: This uses getDefaultSensor - what if we have >1 accels?
         if (enabled) {
             mSensorManager.registerListener(this,
-                mSensorManager.getDefaultSensor(sensortype),
-                SensorManager.SENSOR_DELAY_GAME, null);
+                    mSensorManager.getDefaultSensor(sensortype),
+                    SensorManager.SENSOR_DELAY_GAME, null);
         } else {
             mSensorManager.unregisterListener(this,
-                mSensorManager.getDefaultSensor(sensortype));
+                    mSensorManager.getDefaultSensor(sensortype));
         }
     }
 
@@ -1962,7 +1963,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             SDLActivity.onNativeAccel(event.values[0], event.values[1],
-                event.values[2]);
+                    event.values[2]);
         }
     }
 

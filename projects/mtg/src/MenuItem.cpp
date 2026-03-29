@@ -4,11 +4,10 @@
 #include "Translate.h"
 #include "WResourceManager.h"
 #include "ModRules.h"
-#include "JGE.h"
 
 MenuItem::MenuItem(int id, WFont *font, string text, float x, float y, JQuad * _off, JQuad * _on, const char * particle,
-                JQuad * particleTex, bool hasFocus) :
-    JGuiObject(id), mFont(font), mX(x), mY(y)
+                   JQuad * particleTex, bool hasFocus) :
+        JGuiObject(id), mFont(font), mX(x), mY(y)
 {
     mText = _(text);
     updatedSinceLastRender = 1;
@@ -16,18 +15,6 @@ MenuItem::MenuItem(int id, WFont *font, string text, float x, float y, JQuad * _
     hgeParticleSystemInfo * psi = WResourceManager::Instance()->RetrievePSI(particle, particleTex);
     if (psi)
     {
-        // Scale particle properties for current screen resolution
-        psi->fSizeStart        *= SCALE;
-        psi->fSizeEnd          *= SCALE;
-        psi->fSizeVar          *= SCALE;
-        psi->fSpeedMin         *= SCALE;
-        psi->fSpeedMax         *= SCALE;
-        psi->fGravityMin       *= SCALE;
-        psi->fGravityMax       *= SCALE;
-        psi->fRadialAccelMin   *= SCALE;
-        psi->fRadialAccelMax   *= SCALE;
-        psi->fTangentialAccelMin *= SCALE;
-        psi->fTangentialAccelMax *= SCALE;
         mParticleSys = NEW hgeParticleSystem(psi);
         mParticleSys->MoveTo(mX, mY);
     }
@@ -54,7 +41,7 @@ void MenuItem::Render()
         if (mParticleSys)
             start = mParticleSys->info.colColorStart.GetHWColor();
         PIXEL_TYPE colors[] = { ARGB(0,0,0,0), start, ARGB(0,0,0,0), start, };
-        renderer->FillRect(SCREEN_WIDTH - 400 * SCALE, 0, 400 * SCALE, SCREEN_HEIGHT, colors);
+        renderer->FillRect(255, 0, SCREEN_WIDTH - 165, SCREEN_HEIGHT, colors);//color on main menu right side
         // set additive blending
         renderer->SetTexBlend(BLEND_SRC_ALPHA, BLEND_ONE);
         mParticleSys->Render();
@@ -62,17 +49,16 @@ void MenuItem::Render()
         renderer->SetTexBlend(BLEND_SRC_ALPHA, BLEND_ONE_MINUS_SRC_ALPHA);
         mFont->SetColor(ARGB(255,255,255,255));
         offQuad->SetColor(ARGB(60,255,255,255));
-        float iconScale = SCREEN_HEIGHT / (36.0f * 1.8f);
-        renderer->RenderQuad(offQuad, SCREEN_WIDTH - 20 * SCALE, SCREEN_HEIGHT / 2, 0, iconScale, iconScale);
+        renderer->RenderQuad(offQuad, SCREEN_WIDTH, SCREEN_HEIGHT / 2, 0, 8, 8);//big icon main menu right side
         offQuad->SetColor(ARGB(255,255,255,255));
         onQuad->SetColor(ARGB(255,255,255,255));
-        mFont->SetScale(DEFAULT_MENU_FONT_SCALE);
         mFont->DrawString(mText.c_str(), SCREEN_WIDTH / 2, 3 * SCREEN_HEIGHT / 4, JGETEXT_CENTER);
-        renderer->RenderQuad(onQuad, mX, mY, 0, mScale * SCALE, mScale * SCALE);
+        renderer->RenderQuad(onQuad, mX, mY, 0, mScale, mScale);
+
     }
     else
     {
-        renderer->RenderQuad(offQuad, mX, mY, 0, mScale * SCALE, mScale * SCALE);
+        renderer->RenderQuad(offQuad, mX, mY, 0, mScale, mScale);
     }
     updatedSinceLastRender = 0;
 }
@@ -128,13 +114,13 @@ MenuItem::~MenuItem()
 ostream& MenuItem::toString(ostream& out) const
 {
     return out << "MenuItem ::: mHasFocus : " << mHasFocus << " ; mFont : " << mFont << " ; mText : " << mText << " ; mX,mY : "
-                    << mX << "," << mY << " ; updatedSinceLastRender : " << updatedSinceLastRender << " ; lastDt : " << lastDt
-                    << " ; mScale : " << mScale << " ; mTargetScale : " << mTargetScale << " ; onQuad : " << onQuad
-                    << " ; offQuad : " << offQuad << " ; mParticleSys : " << mParticleSys;
+               << mX << "," << mY << " ; updatedSinceLastRender : " << updatedSinceLastRender << " ; lastDt : " << lastDt
+               << " ; mScale : " << mScale << " ; mTargetScale : " << mTargetScale << " ; onQuad : " << onQuad
+               << " ; offQuad : " << offQuad << " ; mParticleSys : " << mParticleSys;
 }
 
 OtherMenuItem::OtherMenuItem(int id, WFont *font, string text, float x, float y, JQuad * _off, JQuad * _on, JButton _key, bool hasFocus) :
-  MenuItem(id, font, text, x, y, _off, _on, "", WResourceManager::Instance()->GetQuad("particles").get(), hasFocus), mKey(_key), mTimeIndex(0)
+        MenuItem(id, font, text, x, y, _off, _on, "", WResourceManager::Instance()->GetQuad("particles").get(), hasFocus), mKey(_key), mTimeIndex(0)
 {
 
 }
@@ -151,48 +137,47 @@ void OtherMenuItem::Render()
         alpha = (int) (sin(mTimeIndex) * 255);
 
     float olds = mFont->GetScale();
-    float xPos = SCREEN_WIDTH - 100 * SCALE;
-    float xTextPos = xPos + 4 * SCALE;
-    float yPos = SCREEN_HEIGHT_F - 20.f * SCALE;
-    int textAlign = JGETEXT_LEFT;
+    float xPos = SCREEN_WIDTH - 64;
+    float xTextPos = xPos + 54;
+    float yPos = SCREEN_HEIGHT_F-26.f;
+    int textAlign = JGETEXT_RIGHT;
+    //onQuad->SetHFlip(false);
 
     switch(mKey)
     {
         case JGE_BTN_PREV:
             xPos = 5;
-            xTextPos = xPos + 10 * SCALE;
+            xTextPos = xPos + 10;
             textAlign = JGETEXT_LEFT;
+            //onQuad->SetHFlip(true);
             break;
         default:
             break;
     }
 
+    //onQuad->SetColor(ARGB(abs(alpha),255,255,255));
     mFont->SetScale(1.0f);
-    mFont->SetScale((60.0f * SCALE) / mFont->GetStringWidth(mText.c_str()));
-
-    float btnW = mFont->GetStringWidth(mText.c_str());
-    float btnH = mFont->GetHeight();
-    float pad  = 3.0f * SCALE;
-    float vpad = 1.0f * SCALE;
-
-    JRenderer::GetInstance()->FillRoundRect(xPos+1, yPos + vpad * 0.6f, btnW - pad, btnH - vpad, 5 * SCALE, ARGB(abs(alpha), 5, 5, 5));
+    mFont->SetScale(50.0f / mFont->GetStringWidth(mText.c_str()));
+    //JRenderer::GetInstance()->RenderQuad(onQuad, xPos, yPos+2, 0, mScale, mScale);
+    //JRenderer::GetInstance()->FillRoundRect(xPos,yPos+2,mFont->GetStringWidth(mText.c_str()),mFont->GetHeight(),2,ARGB(abs(alpha),255,255,255));
+    JRenderer::GetInstance()->FillRoundRect(xPos+1, yPos+6, mFont->GetStringWidth(mText.c_str()) - 3, mFont->GetHeight() - 10, 5, ARGB(abs(alpha), 5, 5, 5));
     if(!mHasFocus)
     {
         mFont->SetColor(ARGB(abs(alpha),255,255,255));
-        JRenderer::GetInstance()->FillRoundRect(xPos, yPos + vpad * 0.5f, btnW - pad, btnH - vpad, 5 * SCALE, ARGB(abs(alpha), 140, 23, 23));
+        JRenderer::GetInstance()->FillRoundRect(xPos, yPos+5, mFont->GetStringWidth(mText.c_str()) - 3, mFont->GetHeight() - 10, 5, ARGB(abs(alpha), 140, 23, 23));
     }
     else
     {
         mFont->SetColor(ARGB(abs(alpha),5,5,5));
-        JRenderer::GetInstance()->FillRoundRect(xPos, yPos + vpad * 0.5f, btnW - pad, btnH - vpad, 5 * SCALE, ARGB(abs(alpha), 140, 140, 140));
+        JRenderer::GetInstance()->FillRoundRect(xPos, yPos+5, mFont->GetStringWidth(mText.c_str()) - 3, mFont->GetHeight() - 10, 5, ARGB(abs(alpha), 140, 140, 140));
     }
-    JRenderer::GetInstance()->DrawRoundRect(xPos, yPos + vpad * 0.5f, btnW - pad, btnH - vpad, 5 * SCALE, ARGB(abs(alpha-20), 5, 5, 5));
-    mFont->DrawString(mText, xTextPos, yPos + vpad * 0.9f, textAlign);
+    JRenderer::GetInstance()->DrawRoundRect(xPos, yPos+5, mFont->GetStringWidth(mText.c_str()) - 3, mFont->GetHeight() - 10, 5, ARGB(abs(alpha-20), 5, 5, 5));
+    mFont->DrawString(mText, xTextPos, yPos+9, textAlign);
     mFont->SetScale(olds);
 }
 
 void OtherMenuItem::Update(float dt)
 {
-  MenuItem::Update(dt);
-  mTimeIndex += 2*dt;
+    MenuItem::Update(dt);
+    mTimeIndex += 2*dt;
 }

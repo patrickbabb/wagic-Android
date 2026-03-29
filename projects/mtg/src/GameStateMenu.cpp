@@ -54,7 +54,7 @@ enum ENUM_MENU_STATE_MINOR
 };
 
 GameStateMenu::GameStateMenu(GameApp* parent) :
-    GameState(parent, "menu")
+        GameState(parent, "menu")
 {
     mGuiController = NULL;
     subMenuController = NULL;
@@ -117,7 +117,7 @@ void GameStateMenu::Create()
     {
         currentState = MENU_STATE_MAJOR_LANG | MENU_STATE_MINOR_NONE;
     }
-    scroller = NEW TextScroller(Fonts::MAIN_FONT, SCREEN_WIDTH / 2 + 65 * SCALE, 5.5 * SCALE, SCREEN_WIDTH / 2 - 65 * SCALE);
+    scroller = NEW TextScroller(Fonts::MAIN_FONT, SCREEN_WIDTH / 2 + 65, 5, 180);
     scrollerSet = 0;
     splashTex = NULL;
 
@@ -186,12 +186,12 @@ void GameStateMenu::genNbCardsStr()
     PlayerData * playerdata = NEW PlayerData(MTGCollection());
     size_t totalUnique =  MTGCollection()->primitives.size();
     size_t totalPrints = MTGCollection()->totalCards();
-    
+
     if (totalUnique != totalPrints)
     {
         if (playerdata && !options[Options::ACTIVE_PROFILE].isDefault())
             sprintf(GameApp::mynbcardsStr, _("%s: %i cards (%i) (%i unique)").c_str(), options[Options::ACTIVE_PROFILE].str.c_str(),
-                            playerdata->collection->totalCards(), totalPrints,totalUnique);
+                    playerdata->collection->totalCards(), totalPrints,totalUnique);
         else
             sprintf(GameApp::mynbcardsStr, _("%i cards (%i unique)").c_str(),totalPrints,totalUnique);
     }
@@ -199,13 +199,13 @@ void GameStateMenu::genNbCardsStr()
     {
         if (playerdata && !options[Options::ACTIVE_PROFILE].isDefault())
             sprintf(GameApp::mynbcardsStr, _("%s: %i cards (%i)").c_str(), options[Options::ACTIVE_PROFILE].str.c_str(),
-                            playerdata->collection->totalCards(), totalPrints);
+                    playerdata->collection->totalCards(), totalPrints);
         else
             sprintf(GameApp::mynbcardsStr, _("%i cards").c_str(),totalPrints);
     }
 
     if(playerdata)
-    { 
+    {
         if(playerdata->credits > 0)
             GameApp::mycredits = playerdata->credits;
     }
@@ -310,7 +310,7 @@ int GameStateMenu::nextSetFolder(const string & root, const string & file)
         folders.push_back(root);
         folders.push_back(setFolders[mCurrentSetFolderIndex]);
         mCurrentSetFileName = buildFilePath(folders, file);
-        
+
         if (JFileSystem::GetInstance()->FileExists(mCurrentSetFileName))
         {
             mCurrentSetName = setFolders[mCurrentSetFolderIndex];
@@ -455,24 +455,24 @@ void GameStateMenu::ensureMGuiController()
             vector<ModRulesMainMenuItem *>items = gModRules.menu.main;
 
             int numItems = (int)items.size();
-            float startX = 120.f * SCALE;
+            float startX = 80.f;
             float totalSize = SCREEN_WIDTH_F - (2 * startX);
             float space = 0;
             if (numItems < 2)
                 startX = SCREEN_WIDTH_F/2;
-            else 
+            else
                 space = totalSize/(numItems - 1);
 
             for (size_t i = 0; i < items.size(); ++i) {
                 ModRulesMainMenuItem * item = items[i];
                 int iconId = (item->mIconId - 1) * 2;
                 mGuiController->Add(NEW MenuItem(
-                    item->mActionId, 
-                    mFont, item->mDisplayName,
-                    startX + (i * space), SCREEN_HEIGHT_F * 0.65f,
-                    mIcons[iconId].get(), mIcons[iconId + 1].get(),
-                    item->mParticleFile.c_str(), WResourceManager::Instance()->GetQuad("particles").get(),
-                    (i == 0)));
+                        item->mActionId,
+                        mFont, item->mDisplayName,
+                        startX + (i * space), 40 + SCREEN_HEIGHT / 2,
+                        mIcons[iconId].get(), mIcons[iconId + 1].get(),
+                        item->mParticleFile.c_str(), WResourceManager::Instance()->GetQuad("particles").get(),
+                        (i == 0)));
             }
 
             JQuadPtr jq = WResourceManager::Instance()->RetrieveTempQuad("button_shoulder.png");//I set this transparent, don't remove button_shoulder.png
@@ -485,11 +485,11 @@ void GameStateMenu::ensureMGuiController()
             vector<ModRulesOtherMenuItem *>otherItems = gModRules.menu.other;
             if (otherItems.size()) {
                 mGuiController->Add(NEW OtherMenuItem(
-                                       otherItems[0]->mActionId,
-                                       mFont, otherItems[0]->mDisplayName,
-                                       SCREEN_WIDTH - 64, SCREEN_HEIGHT_F-26.f,
-                                       jq.get(), jq.get(), otherItems[0]->mKey, false
-                                       ));
+                        otherItems[0]->mActionId,
+                        mFont, otherItems[0]->mDisplayName,
+                        SCREEN_WIDTH - 64, SCREEN_HEIGHT_F-26.f,
+                        jq.get(), jq.get(), otherItems[0]->mKey, false
+                ));
             }
         }
     }
@@ -513,7 +513,7 @@ void GameStateMenu::Update(float dt)
                 mParent->mpNetwork->connect(mParent->mServerAddress);
                 // we let the server choose the game mode
                 mParent->gameType = GAME_TYPE_SLAVE;
-                      // just to select one, the HOST is in control here.
+                // just to select one, the HOST is in control here.
                 mParent->rules = Rules::getRulesByFilename("classic.txt");
                 hasChosenGameType = true;
                 subMenuController->Close();
@@ -529,91 +529,91 @@ void GameStateMenu::Update(float dt)
     timeIndex += dt * 2;
     switch (MENU_STATE_MAJOR & currentState)
     {
-    case MENU_STATE_MAJOR_LANG:
-        if (MENU_STATE_MINOR_NONE == (currentState & MENU_STATE_MINOR))
-        {
-            if (!subMenuController)
-                loadLangMenu();
-        }
-        if (!langChoices)
-        {
-            currentState = MENU_STATE_MAJOR_LOADING_CARDS;
-            SAFE_DELETE(subMenuController);
-        }
-        else
-            subMenuController->Update(dt);
-        break;
-    case MENU_STATE_MAJOR_LOADING_CARDS:
-        if (primitivesLoadCounter == -1)
-        {
-            listPrimitives();
-        }
-        if (primitivesLoadCounter < (int) (primitives.size()))
-        {
+        case MENU_STATE_MAJOR_LANG:
+            if (MENU_STATE_MINOR_NONE == (currentState & MENU_STATE_MINOR))
+            {
+                if (!subMenuController)
+                    loadLangMenu();
+            }
+            if (!langChoices)
+            {
+                currentState = MENU_STATE_MAJOR_LOADING_CARDS;
+                SAFE_DELETE(subMenuController);
+            }
+            else
+                subMenuController->Update(dt);
+            break;
+        case MENU_STATE_MAJOR_LOADING_CARDS:
+            if (primitivesLoadCounter == -1)
+            {
+                listPrimitives();
+            }
+            if (primitivesLoadCounter < (int) (primitives.size()))
+            {
 #ifdef _DEBUG
-            int startTime = JGEGetTime();
+                int startTime = JGEGetTime();
 #endif
-            MTGCollection()->load(primitives[primitivesLoadCounter].c_str());
+                MTGCollection()->load(primitives[primitivesLoadCounter].c_str());
 #if _DEBUG
-            int endTime = JGEGetTime();
+                int endTime = JGEGetTime();
             int elapsedTime = (endTime - startTime);
             DebugTrace("Time elapsed while loading " << primitives[primitivesLoadCounter] << " : " << elapsedTime << " ms");
 #endif
 
-            primitivesLoadCounter++;
-            break;
-        }
-        primitivesLoadCounter = primitives.size() + 1;
-        if (mReadConf)
-        {
-            MTGCollection()->load(mCurrentSetFileName.c_str(), mCurrentSetName.c_str());
-        }
-        else
-        {
-            mReadConf = 1;
-        }
-        if (!nextSetFolder("sets/", "_cards.dat"))
-        {
-            //Reset LimitedCardsMap
-            MTGCollection()->limitedCardsMap.clear();
-
-            //Remove temporary translations
-            Translator::GetInstance()->tempValues.clear();
-
-            DebugTrace(std::endl << "==" << std::endl <<
-                            "Total MTGCards: " << MTGCollection()->collection.size() << std::endl <<
-                            "Total CardPrimitives: " << MTGCollection()->primitives.size() << std::endl << "==");
-
-            //Force default, if necessary.
-            if (options[Options::ACTIVE_PROFILE].str == "")
-                options[Options::ACTIVE_PROFILE].str = "Default";
-
-            //Release splash texture
-            WResourceManager::Instance()->Release(splashTex);
-            splashTex = NULL;
-
-            //check for deleted collection / first-timer
-            if (JFileSystem::GetInstance()->FileExists(options.profileFile(PLAYER_COLLECTION)))
+                primitivesLoadCounter++;
+                break;
+            }
+            primitivesLoadCounter = primitives.size() + 1;
+            if (mReadConf)
             {
-                currentState = MENU_STATE_MAJOR_MAINMENU;
+                MTGCollection()->load(mCurrentSetFileName.c_str(), mCurrentSetName.c_str());
             }
             else
             {
-                currentState = MENU_STATE_MAJOR_FIRST_TIME;
+                mReadConf = 1;
             }
+            if (!nextSetFolder("sets/", "_cards.dat"))
+            {
+                //Reset LimitedCardsMap
+                MTGCollection()->limitedCardsMap.clear();
 
-            //Reload list of unlocked sets, now that we know about the sets.
-            options.reloadProfile();
-            genNbCardsStr();
-            //All major things have been loaded, resize the cache to use it as efficiently as possible
-            WResourceManager::Instance()->ResetCacheLimits();
-        }
-        break;
-    case MENU_STATE_MAJOR_FIRST_TIME:
-        currentState &= MENU_STATE_MAJOR_MAINMENU;
-        options.reloadProfile(); //Handles building a new deck, if needed.
-        break;
-    case MENU_STATE_MAJOR_MAINMENU: 
+                //Remove temporary translations
+                Translator::GetInstance()->tempValues.clear();
+
+                DebugTrace(std::endl << "==" << std::endl <<
+                                     "Total MTGCards: " << MTGCollection()->collection.size() << std::endl <<
+                                     "Total CardPrimitives: " << MTGCollection()->primitives.size() << std::endl << "==");
+
+                //Force default, if necessary.
+                if (options[Options::ACTIVE_PROFILE].str == "")
+                    options[Options::ACTIVE_PROFILE].str = "Default";
+
+                //Release splash texture
+                WResourceManager::Instance()->Release(splashTex);
+                splashTex = NULL;
+
+                //check for deleted collection / first-timer
+                if (JFileSystem::GetInstance()->FileExists(options.profileFile(PLAYER_COLLECTION)))
+                {
+                    currentState = MENU_STATE_MAJOR_MAINMENU;
+                }
+                else
+                {
+                    currentState = MENU_STATE_MAJOR_FIRST_TIME;
+                }
+
+                //Reload list of unlocked sets, now that we know about the sets.
+                options.reloadProfile();
+                genNbCardsStr();
+                //All major things have been loaded, resize the cache to use it as efficiently as possible
+                WResourceManager::Instance()->ResetCacheLimits();
+            }
+            break;
+        case MENU_STATE_MAJOR_FIRST_TIME:
+            currentState &= MENU_STATE_MAJOR_MAINMENU;
+            options.reloadProfile(); //Handles building a new deck, if needed.
+            break;
+        case MENU_STATE_MAJOR_MAINMENU:
         {
             if (!scrollerSet)
                 fillScroller();
@@ -626,112 +626,112 @@ void GameStateMenu::Update(float dt)
             for (size_t i = 0; i < items.size(); ++i)
             {
                 if (mEngine->GetButtonState(items[i]->mKey) && items[i]->getMatchingGameState())
-                     mParent->DoTransition(TRANSITION_FADE, items[i]->getMatchingGameState()); //TODO: Add the transition as a parameter in the rules file
+                    mParent->DoTransition(TRANSITION_FADE, items[i]->getMatchingGameState()); //TODO: Add the transition as a parameter in the rules file
             }
             break;
-         }
+        }
 #ifdef NETWORK_SUPPORT
-    case MENU_STATE_NETWORK_DEFINE:
-        if(MENU_STATE_MINOR_NONE == (currentState & MENU_STATE_MINOR))
-        {
-            currentState = MENU_STATE_MAJOR_SUBMENU;
-            subMenuController = NEW SimpleMenu(JGE::GetInstance(), WResourceManager::Instance(), MENU_FIRST_DUEL_SUBMENU, this, Fonts::MENU_FONT, 150, 60);
-            if (subMenuController)
-            {
-                subMenuController->Add(SUBMENUITEM_HOST_GAME, "Host a game");
-                subMenuController->Add(SUBMENUITEM_JOIN_GAME, "Join a game");
-                subMenuController->Add(SUBMENUITEM_CANCEL, "Cancel");
-            }
-        }
-        break;
-    case MENU_STATE_NETWORK_WAIT:
-        if(MENU_STATE_MINOR_NONE == (currentState & MENU_STATE_MINOR))
-        {
-            if(mParent->mpNetwork->isConnected())
-            {
-                if(subMenuController) subMenuController->Close();
-                currentState = MENU_STATE_MAJOR_DUEL | MENU_STATE_MINOR_SUBMENU_CLOSING;
-            }
-            else if(!subMenuController)
-            {
-                string aString;
-                mParent->mpNetwork->getServerIp(aString);
-                aString = "Waiting for connection to " + aString;
-
-                subMenuController = NEW SimpleMenu(JGE::GetInstance(), WResourceManager::Instance(), MENU_FIRST_DUEL_SUBMENU, this, Fonts::MENU_FONT, 150, 60, aString.c_str());
-                if (subMenuController)
-                {
-                    subMenuController->Add(SUBMENUITEM_CANCEL, "Cancel");
-                }
-            }
-            else{
-                if (subMenuController)
-                    subMenuController->Update(dt);
-                ensureMGuiController();
-                mGuiController->Update(dt);
-                break;
-            }
-        }
-        break;
-#endif //NETWORK_SUPPORT
-    case MENU_STATE_MAJOR_SUBMENU:
-        if (subMenuController)
-            subMenuController->Update(dt);
-        ensureMGuiController();
-        mGuiController->Update(dt);
-        break;
-    case MENU_STATE_MAJOR_DUEL:
-        if (MENU_STATE_MINOR_NONE == (currentState & MENU_STATE_MINOR))
-        {
-            if (!hasChosenGameType)
+        case MENU_STATE_NETWORK_DEFINE:
+            if(MENU_STATE_MINOR_NONE == (currentState & MENU_STATE_MINOR))
             {
                 currentState = MENU_STATE_MAJOR_SUBMENU;
                 subMenuController = NEW SimpleMenu(JGE::GetInstance(), WResourceManager::Instance(), MENU_FIRST_DUEL_SUBMENU, this, Fonts::MENU_FONT, 150, 60);
                 if (subMenuController)
                 {
-                    for (size_t i = 0; i < Rules::RulesList.size(); ++i)
-                    {
-                        Rules * rules = Rules::RulesList[i];
-                        bool unlocked = rules->unlockOption == INVALID_OPTION 
-                            ? (rules->mUnlockOptionString.size() == 0 ||  options[rules->mUnlockOptionString].number !=0)
-                            :  options[rules->unlockOption].number != 0;
-                        if (!rules->hidden && (unlocked))
-                        {
-                            subMenuController->Add(SUBMENUITEM_END_OFFSET + i, rules->displayName.c_str());
-                        }
-                    }
+                    subMenuController->Add(SUBMENUITEM_HOST_GAME, "Host a game");
+                    subMenuController->Add(SUBMENUITEM_JOIN_GAME, "Join a game");
                     subMenuController->Add(SUBMENUITEM_CANCEL, "Cancel");
                 }
             }
-            else
+            break;
+        case MENU_STATE_NETWORK_WAIT:
+            if(MENU_STATE_MINOR_NONE == (currentState & MENU_STATE_MINOR))
             {
-                if (mParent->gameType == GAME_TYPE_STORY)
-                    mParent->DoTransition(TRANSITION_FADE, GAME_STATE_STORY);
-                else
-                    mParent->DoTransition(TRANSITION_FADE, GAME_STATE_DUEL);
-                currentState = MENU_STATE_MAJOR_MAINMENU;
+                if(mParent->mpNetwork->isConnected())
+                {
+                    if(subMenuController) subMenuController->Close();
+                    currentState = MENU_STATE_MAJOR_DUEL | MENU_STATE_MINOR_SUBMENU_CLOSING;
+                }
+                else if(!subMenuController)
+                {
+                    string aString;
+                    mParent->mpNetwork->getServerIp(aString);
+                    aString = "Waiting for connection to " + aString;
+
+                    subMenuController = NEW SimpleMenu(JGE::GetInstance(), WResourceManager::Instance(), MENU_FIRST_DUEL_SUBMENU, this, Fonts::MENU_FONT, 150, 60, aString.c_str());
+                    if (subMenuController)
+                    {
+                        subMenuController->Add(SUBMENUITEM_CANCEL, "Cancel");
+                    }
+                }
+                else{
+                    if (subMenuController)
+                        subMenuController->Update(dt);
+                    ensureMGuiController();
+                    mGuiController->Update(dt);
+                    break;
+                }
             }
-        }
+            break;
+#endif //NETWORK_SUPPORT
+        case MENU_STATE_MAJOR_SUBMENU:
+            if (subMenuController)
+                subMenuController->Update(dt);
+            ensureMGuiController();
+            mGuiController->Update(dt);
+            break;
+        case MENU_STATE_MAJOR_DUEL:
+            if (MENU_STATE_MINOR_NONE == (currentState & MENU_STATE_MINOR))
+            {
+                if (!hasChosenGameType)
+                {
+                    currentState = MENU_STATE_MAJOR_SUBMENU;
+                    subMenuController = NEW SimpleMenu(JGE::GetInstance(), WResourceManager::Instance(), MENU_FIRST_DUEL_SUBMENU, this, Fonts::MENU_FONT, 150, 60);
+                    if (subMenuController)
+                    {
+                        for (size_t i = 0; i < Rules::RulesList.size(); ++i)
+                        {
+                            Rules * rules = Rules::RulesList[i];
+                            bool unlocked = rules->unlockOption == INVALID_OPTION
+                                            ? (rules->mUnlockOptionString.size() == 0 ||  options[rules->mUnlockOptionString].number !=0)
+                                            :  options[rules->unlockOption].number != 0;
+                            if (!rules->hidden && (unlocked))
+                            {
+                                subMenuController->Add(SUBMENUITEM_END_OFFSET + i, rules->displayName.c_str());
+                            }
+                        }
+                        subMenuController->Add(SUBMENUITEM_CANCEL, "Cancel");
+                    }
+                }
+                else
+                {
+                    if (mParent->gameType == GAME_TYPE_STORY)
+                        mParent->DoTransition(TRANSITION_FADE, GAME_STATE_STORY);
+                    else
+                        mParent->DoTransition(TRANSITION_FADE, GAME_STATE_DUEL);
+                    currentState = MENU_STATE_MAJOR_MAINMENU;
+                }
+            }
     }
 
     switch (MENU_STATE_MINOR & currentState)
     {
-    case MENU_STATE_MINOR_SUBMENU_CLOSING:
-        if (!subMenuController)
-        { //http://code.google.com/p/wagic/issues/detail?id=379
-            currentState &= ~MENU_STATE_MINOR_SUBMENU_CLOSING;
+        case MENU_STATE_MINOR_SUBMENU_CLOSING:
+            if (!subMenuController)
+            { //http://code.google.com/p/wagic/issues/detail?id=379
+                currentState &= ~MENU_STATE_MINOR_SUBMENU_CLOSING;
+                break;
+            }
+            if (subMenuController->isClosed())
+            {
+                SAFE_DELETE(subMenuController);
+                currentState &= ~MENU_STATE_MINOR_SUBMENU_CLOSING;
+            }
+            else
+                subMenuController->Update(dt);
             break;
-        }
-        if (subMenuController->isClosed())
-        {
-            SAFE_DELETE(subMenuController);
-            currentState &= ~MENU_STATE_MINOR_SUBMENU_CLOSING;
-        }
-        else
-            subMenuController->Update(dt);
-        break;
-    case MENU_STATE_MINOR_NONE:
-        ;// Nothing to do.
+        case MENU_STATE_MINOR_NONE:
+            ;// Nothing to do.
     }
 
     scroller->Update(dt);
@@ -745,36 +745,50 @@ void GameStateMenu::Update(float dt)
 //Renders the "sub" menu with shoulder button links
 void GameStateMenu::RenderTopMenu()
 {
-    float leftTextPos = 20 * SCALE;
+    float leftTextPos = 10;
     float rightTextPos = SCREEN_WIDTH - 10;
     JRenderer * renderer = JRenderer::GetInstance();
+
     vector<ModRulesOtherMenuItem *>items = gModRules.menu.other;
     for (size_t i = 0; i < items.size(); ++i)
     {
         switch(items[i]->mKey)
         {
             case JGE_BTN_PREV:
-                leftTextPos += 64 * SCALE;
+                leftTextPos += 64;
                 break;
             case JGE_BTN_NEXT:
-                rightTextPos -= 64 * SCALE;
+                rightTextPos -= 64;
                 break;
             default:
                 DebugTrace("not supported yet!");
                 break;
         }
     }
+
     WFont * mFont = WResourceManager::Instance()->GetWFont(Fonts::MAIN_FONT);
     mFont->SetScale(DEFAULT_MAIN_FONT_SCALE);
+    //mFont->SetColor(ARGB(128,255,255,255));
     mFont->SetColor(ARGB(220,255,255,255));
-    mFont->DrawString(GAME_VERSION, (SCREEN_WIDTH_F/2) - (mFont->GetStringWidth(GAME_VERSION))/2, SCREEN_HEIGHT_F - 17 * SCALE, JGETEXT_LEFT);
-    mFont->SetColor(ARGB(128,255,255,255));
-    mFont->DrawString(GameApp::mynbcardsStr, leftTextPos, 5 * SCALE);
-    renderer->FillRect(leftTextPos, 26 * SCALE, 104 * SCALE, 8 * SCALE, ARGB(255, 100, 90, 60));
-    renderer->FillRect(leftTextPos + 2, 28 * SCALE, (float)(gamePercentComplete()) * SCALE, 4 * SCALE, ARGB(255,220,200, 125));
+    /*//tooltip
+    JQuadPtr tooltips;
+    tooltips = WResourceManager::Instance()->RetrieveTempQuad("tooltips.png");//new graphics tooltips
+    if (tooltips.get())
+    {
+        float xscale = (mFont->GetStringWidth(GAME_VERSION)+(mFont->GetStringWidth(GAME_VERSION)/18)) / tooltips->mWidth;
+        float yscale = mFont->GetHeight() / tooltips->mHeight;
+        tooltips->SetHotSpot(tooltips->mWidth / 2,0);
+        JRenderer::GetInstance()->RenderQuad(tooltips.get(), SCREEN_WIDTH_F/2, SCREEN_HEIGHT_F-17,0,xscale,yscale);
+    }
+    //end tooltip*/
+    mFont->DrawString(GAME_VERSION, (SCREEN_WIDTH_F/2) - (mFont->GetStringWidth(GAME_VERSION))/2, SCREEN_HEIGHT_F-17, JGETEXT_LEFT);
+    mFont->SetColor(ARGB(128,255,255,255));//reset color
+    mFont->DrawString(GameApp::mynbcardsStr, leftTextPos, 5);
+    renderer->FillRect(leftTextPos, 26, 104, 8, ARGB(255, 100, 90, 60));
+    renderer->FillRect(leftTextPos + 2, 28, (float)(gamePercentComplete()), 4, ARGB(255,220,200, 125));
     char buf[512];
     sprintf(buf, _("achieved: %i%%").c_str(), gamePercentComplete());
-    mFont->DrawString(buf, (leftTextPos + 122 * SCALE) / 2, 35 * SCALE, JGETEXT_CENTER);
+    mFont->DrawString(buf, (leftTextPos + 104) / 2, 35, JGETEXT_CENTER);
     mFont->SetScale(1.f);
     mFont->SetColor(ARGB(255,255,255,255));
 }
@@ -826,10 +840,10 @@ void GameStateMenu::Render()
         }
         else
         {
-        //rectangle
+            //rectangle
             renderer->FillRect(0, SCREEN_HEIGHT - 50, SCREEN_WIDTH + 1.5f, mFont->GetHeight(),ARGB(225,5,5,5));;
             renderer->DrawRect(0, SCREEN_HEIGHT - 50, SCREEN_WIDTH + 1.5f, mFont->GetHeight(),ARGB(200, 204, 153, 0));
-        //end
+            //end
         }
 #endif
         mFont->SetColor(ARGB(170,0,0,0));
@@ -841,7 +855,7 @@ void GameStateMenu::Render()
     {
         PIXEL_TYPE colors[] = {
 
-        ARGB(255,3,3,0), ARGB(255,8,8,0), ARGB(255,21,21,10), ARGB(255,50,50,30), };
+                ARGB(255,3,3,0), ARGB(255,8,8,0), ARGB(255,21,21,10), ARGB(255,50,50,30), };
         renderer->FillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, colors);
 
         if (mGuiController)
@@ -851,7 +865,7 @@ void GameStateMenu::Render()
         scroller->Render();
 
         if (mBg.get())
-            renderer->RenderQuad(mBg.get(), SCREEN_WIDTH_F/2, 2, 0, (256 * SCALE) / mBg->mWidth, (166 * SCALE) / mBg->mHeight);
+            renderer->RenderQuad(mBg.get(), SCREEN_WIDTH_F/2, 2, 0, 256 / mBg->mWidth, 166 / mBg->mHeight);
 
         RenderTopMenu();
 
@@ -859,14 +873,14 @@ void GameStateMenu::Render()
         std::ostringstream streamC;
         streamC << "Credits: " << GameApp::mycredits;
         mFont = WResourceManager::Instance()->GetWFont(Fonts::MAIN_FONT);
-        mFont->SetScale(DEFAULT_MAIN_FONT_SCALE);
+        mFont->SetScale(0.9f);
         mFont->SetColor(ARGB(150,248,248,255));
-        mFont->DrawString(streamC.str(), 20 * SCALE, SCREEN_HEIGHT - 16 * SCALE);
+        mFont->DrawString(streamC.str(), 12, SCREEN_HEIGHT - 16);
         mFont->SetColor(ARGB(255,255,255,255));
         mFont->SetScale(DEFAULT_MAIN_FONT_SCALE);
         mFont = WResourceManager::Instance()->GetWFont(Fonts::MENU_FONT);
-//end
-        
+        //end
+
     }
     if (subMenuController)
     {
@@ -881,113 +895,113 @@ void GameStateMenu::ButtonPressed(int controllerId, int controlId)
     DebugTrace("GameStateMenu: controllerId " << controllerId << " selected");
     switch (controllerId)
     {
-    case MENU_LANGUAGE_SELECTION:
-        if ( controlId == kInfoMenuID )
+        case MENU_LANGUAGE_SELECTION:
+            if ( controlId == kInfoMenuID )
+                break;
+            setLang(controlId);
+            WResourceManager::Instance()->ReloadWFonts(); // Fix for choosing Chinese language at first time.
+            subMenuController->Close();
+            currentState = MENU_STATE_MAJOR_LOADING_CARDS | MENU_STATE_MINOR_SUBMENU_CLOSING;
             break;
-        setLang(controlId);
-        WResourceManager::Instance()->ReloadWFonts(); // Fix for choosing Chinese language at first time.
-        subMenuController->Close();
-        currentState = MENU_STATE_MAJOR_LOADING_CARDS | MENU_STATE_MINOR_SUBMENU_CLOSING;
-        break;
-    case 101:
-        options.createUsersFirstDeck(controlId);
-        currentState = MENU_STATE_MAJOR_MAINMENU | MENU_STATE_MINOR_NONE;
-        break;
-    default:
-        switch (controlId)
-        {
-        case MENUITEM_PLAY:
-            subMenuController = NEW SimpleMenu(JGE::GetInstance(), WResourceManager::Instance(), MENU_FIRST_DUEL_SUBMENU, this, Fonts::MENU_FONT, 150, 60);
-            if (subMenuController)
+        case 101:
+            options.createUsersFirstDeck(controlId);
+            currentState = MENU_STATE_MAJOR_MAINMENU | MENU_STATE_MINOR_NONE;
+            break;
+        default:
+            switch (controlId)
             {
+                case MENUITEM_PLAY:
+                    subMenuController = NEW SimpleMenu(JGE::GetInstance(), WResourceManager::Instance(), MENU_FIRST_DUEL_SUBMENU, this, Fonts::MENU_FONT, 150, 60);
+                    if (subMenuController)
+                    {
 #ifdef NETWORK_SUPPORT
-                subMenuController->Add(SUBMENUITEM_1PLAYER, "1 Player");
+                        subMenuController->Add(SUBMENUITEM_1PLAYER, "1 Player");
 #else
-                subMenuController->Add(SUBMENUITEM_1PLAYER, _("Play Game").c_str());
+                        subMenuController->Add(SUBMENUITEM_1PLAYER, _("Play Game").c_str());
 #endif
-                // TODO Put 2 players mode back
-                // This requires to fix the hand (to accept 2 players) OR to implement network game
+                        // TODO Put 2 players mode back
+                        // This requires to fix the hand (to accept 2 players) OR to implement network game
 #ifdef NETWORK_SUPPORT
-                subMenuController->Add(SUBMENUITEM_2PLAYERS, "2 Players");
+                        subMenuController->Add(SUBMENUITEM_2PLAYERS, "2 Players");
 #endif //NETWORK_SUPPORT
-                subMenuController->Add(SUBMENUITEM_DEMO, _("Demo").c_str());
-                subMenuController->Add(SUBMENUITEM_CANCEL, _("Cancel").c_str());
+                        subMenuController->Add(SUBMENUITEM_DEMO, _("Demo").c_str());
+                        subMenuController->Add(SUBMENUITEM_CANCEL, _("Cancel").c_str());
 #ifdef TESTSUITE
-                if (Rules::getRulesByFilename("testsuite.txt"))
+                        if (Rules::getRulesByFilename("testsuite.txt"))
                     subMenuController->Add(SUBMENUITEM_TESTSUITE, "Test Suite");
 #endif
 
 #ifdef AI_CHANGE_TESTING
-                subMenuController->Add(SUBMENUITEM_TESTAI, "AI A/B Testing");
+                        subMenuController->Add(SUBMENUITEM_TESTAI, "AI A/B Testing");
 #endif
-                currentState = MENU_STATE_MAJOR_SUBMENU | MENU_STATE_MINOR_NONE;
-            }
-            break;
+                        currentState = MENU_STATE_MAJOR_SUBMENU | MENU_STATE_MINOR_NONE;
+                    }
+                    break;
 
-        case MENUITEM_DECKEDITOR:
-        case MENUITEM_SHOP:
-        case MENUITEM_OPTIONS:
-        case MENUITEM_TROPHIES:
-            mParent->DoTransition(TRANSITION_FADE,  ModRulesMenuItem::getMatchingGameState(controlId));
-            break;
+                case MENUITEM_DECKEDITOR:
+                case MENUITEM_SHOP:
+                case MENUITEM_OPTIONS:
+                case MENUITEM_TROPHIES:
+                    mParent->DoTransition(TRANSITION_FADE,  ModRulesMenuItem::getMatchingGameState(controlId));
+                    break;
 
-        case MENUITEM_EXIT:
-            mEngine->End();
-            break;
-        case SUBMENUITEM_1PLAYER:
-            mParent->players[0] = PLAYER_TYPE_HUMAN;
-            mParent->players[1] = PLAYER_TYPE_CPU;
-            subMenuController->Close();
-            currentState = MENU_STATE_MAJOR_DUEL | MENU_STATE_MINOR_SUBMENU_CLOSING;
-            break;
+                case MENUITEM_EXIT:
+                    mEngine->End();
+                    break;
+                case SUBMENUITEM_1PLAYER:
+                    mParent->players[0] = PLAYER_TYPE_HUMAN;
+                    mParent->players[1] = PLAYER_TYPE_CPU;
+                    subMenuController->Close();
+                    currentState = MENU_STATE_MAJOR_DUEL | MENU_STATE_MINOR_SUBMENU_CLOSING;
+                    break;
 #ifdef NETWORK_SUPPORT
-        case SUBMENUITEM_2PLAYERS:
-            mParent->players[0] = PLAYER_TYPE_HUMAN;
-            mParent->players[1] = PLAYER_TYPE_HUMAN;
-            subMenuController->Close();
-            currentState = MENU_STATE_NETWORK_DEFINE | MENU_STATE_MINOR_SUBMENU_CLOSING;
-            break;
-        case SUBMENUITEM_HOST_GAME:
-        {
-            if(!mParent->mpNetwork)
-            {
-                mParent->mpNetwork = new JNetwork();
-            }
-            mParent->mpNetwork->connect();
-            subMenuController->Close();
-            currentState = MENU_STATE_NETWORK_WAIT | MENU_STATE_MINOR_SUBMENU_CLOSING;
-            break;
-        }
-        case SUBMENUITEM_JOIN_GAME:
-        {
-            if(!mParent->mpNetwork)
-            {
-                options.keypadStart("127.0.0.1", &(mParent->mServerAddress), true, true);
-                options.keypadTitle("Enter device address to connect");
-            }
-            break;
-        }
+                case SUBMENUITEM_2PLAYERS:
+                    mParent->players[0] = PLAYER_TYPE_HUMAN;
+                    mParent->players[1] = PLAYER_TYPE_HUMAN;
+                    subMenuController->Close();
+                    currentState = MENU_STATE_NETWORK_DEFINE | MENU_STATE_MINOR_SUBMENU_CLOSING;
+                    break;
+                case SUBMENUITEM_HOST_GAME:
+                {
+                    if(!mParent->mpNetwork)
+                    {
+                        mParent->mpNetwork = new JNetwork();
+                    }
+                    mParent->mpNetwork->connect();
+                    subMenuController->Close();
+                    currentState = MENU_STATE_NETWORK_WAIT | MENU_STATE_MINOR_SUBMENU_CLOSING;
+                    break;
+                }
+                case SUBMENUITEM_JOIN_GAME:
+                {
+                    if(!mParent->mpNetwork)
+                    {
+                        options.keypadStart("127.0.0.1", &(mParent->mServerAddress), true, true);
+                        options.keypadTitle("Enter device address to connect");
+                    }
+                    break;
+                }
 #endif //NETWORK_SUPPORT
-        case SUBMENUITEM_DEMO:
-            mParent->players[0] = PLAYER_TYPE_CPU;
-            mParent->players[1] = PLAYER_TYPE_CPU;
-            mParent->gameType = GAME_TYPE_DEMO;
-            subMenuController->Close();
-            currentState = MENU_STATE_MAJOR_DUEL | MENU_STATE_MINOR_SUBMENU_CLOSING;
-            break;
-        case SUBMENUITEM_CANCEL:
-        case kInfoMenuID: // Triangle button
-            if (subMenuController != NULL)
-            {
-                subMenuController->Close();
-            }
+                case SUBMENUITEM_DEMO:
+                    mParent->players[0] = PLAYER_TYPE_CPU;
+                    mParent->players[1] = PLAYER_TYPE_CPU;
+                    mParent->gameType = GAME_TYPE_DEMO;
+                    subMenuController->Close();
+                    currentState = MENU_STATE_MAJOR_DUEL | MENU_STATE_MINOR_SUBMENU_CLOSING;
+                    break;
+                case SUBMENUITEM_CANCEL:
+                case kInfoMenuID: // Triangle button
+                    if (subMenuController != NULL)
+                    {
+                        subMenuController->Close();
+                    }
 #ifdef NETWORK_SUPPORT
-            SAFE_DELETE(mParent->mpNetwork);
+                    SAFE_DELETE(mParent->mpNetwork);
 #endif //NETWORK_SUPPORT
-            currentState = MENU_STATE_MAJOR_MAINMENU | MENU_STATE_MINOR_SUBMENU_CLOSING;
-            break;
+                    currentState = MENU_STATE_MAJOR_MAINMENU | MENU_STATE_MINOR_SUBMENU_CLOSING;
+                    break;
 #ifdef AI_CHANGE_TESTING
-        case SUBMENUITEM_TESTAI:
+                    case SUBMENUITEM_TESTAI:
              options[Options::AIDECKS_UNLOCKED].number = 5000; //hack to force-test all decks
             mParent->players[0] = PLAYER_TYPE_CPU_TEST;
             mParent->players[1] = PLAYER_TYPE_CPU_TEST;
@@ -997,7 +1011,7 @@ void GameStateMenu::ButtonPressed(int controllerId, int controlId)
             break;
 #endif
 #ifdef TESTSUITE
-       case SUBMENUITEM_TESTSUITE:
+                    case SUBMENUITEM_TESTSUITE:
             mParent->rules = Rules::getRulesByFilename("testsuite.txt");
             this->hasChosenGameType = true;
             mParent->gameType = GAME_TYPE_CLASSIC;
@@ -1007,34 +1021,34 @@ void GameStateMenu::ButtonPressed(int controllerId, int controlId)
             currentState = MENU_STATE_MAJOR_DUEL | MENU_STATE_MINOR_SUBMENU_CLOSING;
             break;
 #endif
-            default: //Game modes
-            this->hasChosenGameType = true;
-            mParent->rules = Rules::RulesList[controlId - SUBMENUITEM_END_OFFSET];
-            mParent->gameType = (mParent->rules->gamemode); //TODO can we get rid of gameType in the long run, since it is also stored in the rules object ?
-            subMenuController->Close();
-            currentState = MENU_STATE_MAJOR_DUEL | MENU_STATE_MINOR_SUBMENU_CLOSING;
+                default: //Game modes
+                    this->hasChosenGameType = true;
+                    mParent->rules = Rules::RulesList[controlId - SUBMENUITEM_END_OFFSET];
+                    mParent->gameType = (mParent->rules->gamemode); //TODO can we get rid of gameType in the long run, since it is also stored in the rules object ?
+                    subMenuController->Close();
+                    currentState = MENU_STATE_MAJOR_DUEL | MENU_STATE_MINOR_SUBMENU_CLOSING;
+                    break;
+            }
             break;
-        }
-        break;
     }
 }
 
 ostream& GameStateMenu::toString(ostream& out) const
 {
     return out << "GameStateMenu ::: scroller : " << scroller
-                 << " ; scrollerSet : " << scrollerSet
-                 << " ; mGuiController : " << mGuiController
-                 << " ; subMenuController : " << subMenuController
-                 << " ; gameTypeMenu : " << gameTypeMenu
-                 << " ; hasChosenGameType : " << hasChosenGameType
-                 << " ; mIcons : " << mIcons
-                 << " ; bgTexture : " << bgTexture
-                 << " ; mBg : " << mBg
-                 << " ; mCreditsYPos : " << mCreditsYPos
-                 << " ; currentState : " << currentState
-                 << " ; mVolume : " << mVolume
-                 << " ; mCurrentSetName : " << mCurrentSetName
-                 << " ; mCurrentSetFileName : " << mCurrentSetFileName
-                 << " ; mReadConf : " << mReadConf
-                 << " ; timeIndex : " << timeIndex;
+               << " ; scrollerSet : " << scrollerSet
+               << " ; mGuiController : " << mGuiController
+               << " ; subMenuController : " << subMenuController
+               << " ; gameTypeMenu : " << gameTypeMenu
+               << " ; hasChosenGameType : " << hasChosenGameType
+               << " ; mIcons : " << mIcons
+               << " ; bgTexture : " << bgTexture
+               << " ; mBg : " << mBg
+               << " ; mCreditsYPos : " << mCreditsYPos
+               << " ; currentState : " << currentState
+               << " ; mVolume : " << mVolume
+               << " ; mCurrentSetName : " << mCurrentSetName
+               << " ; mCurrentSetFileName : " << mCurrentSetFileName
+               << " ; mReadConf : " << mReadConf
+               << " ; timeIndex : " << timeIndex;
 }

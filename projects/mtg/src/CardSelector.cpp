@@ -51,7 +51,7 @@ struct CardSelectorTrue: public Exp
 };
 
 CardSelector::SelectorMemory::SelectorMemory(PlayGuiObject* object) :
-    object(object)
+        object(object)
 {
     if (object)
     {
@@ -66,7 +66,7 @@ CardSelector::SelectorMemory::SelectorMemory()
 }
 
 CardSelector::CardSelector(GameObserver *observer, DuelLayers* duel) :
-    CardSelectorBase(observer), active(NULL), duel(duel), limitor(NULL), bigpos(300, 145, 1.0, 0.0, 220), timer(0.0f)
+        CardSelectorBase(observer), active(NULL), duel(duel), limitor(NULL), bigpos(300, 145, 1.0, 0.0, 220), timer(0.0f)
 {
 }
 
@@ -187,106 +187,106 @@ bool CardSelector::CheckUserInput(JButton key)
 
     switch (key)
     {
-    case JGE_BTN_SEC:
-        observer->cancelCurrentAction();
-        goto switch_active;
-        break;
-    case JGE_BTN_OK:
-        observer->ButtonPressed(active);
-        goto switch_active;
-        break;
-    case JGE_BTN_LEFT:
-        active = closest<CardSelectorLeft> (cards, limitor, active);
-        break;
-    case JGE_BTN_RIGHT:
-        active = closest<CardSelectorRight> (cards, limitor, active);
-        break;
-    case JGE_BTN_UP:
-        active = closest<CardSelectorUp> (cards, limitor, active);
-        break;
-    case JGE_BTN_DOWN:
-        active = closest<CardSelectorDown> (cards, limitor, active);
-        break;
-    case JGE_BTN_CANCEL:
-        mDrawMode = (mDrawMode + 1) % DrawMode::kNumDrawModes;
-        if (mDrawMode == DrawMode::kText)
-            options[Options::DISABLECARDS].number = 1;
-        else
-            options[Options::DISABLECARDS].number = 0;
-        return true;
-    default:
-      {
-        if(!jge->GetLeftClickCoordinates(x, y))
+        case JGE_BTN_SEC:
+            observer->cancelCurrentAction();
+            goto switch_active;
+            break;
+        case JGE_BTN_OK:
+            observer->ButtonPressed(active);
+            goto switch_active;
+            break;
+        case JGE_BTN_LEFT:
+            active = closest<CardSelectorLeft> (cards, limitor, active);
+            break;
+        case JGE_BTN_RIGHT:
+            active = closest<CardSelectorRight> (cards, limitor, active);
+            break;
+        case JGE_BTN_UP:
+            active = closest<CardSelectorUp> (cards, limitor, active);
+            break;
+        case JGE_BTN_DOWN:
+            active = closest<CardSelectorDown> (cards, limitor, active);
+            break;
+        case JGE_BTN_CANCEL:
+            mDrawMode = (mDrawMode + 1) % DrawMode::kNumDrawModes;
+            if (mDrawMode == DrawMode::kText)
+                options[Options::DISABLECARDS].number = 1;
+            else
+                options[Options::DISABLECARDS].number = 0;
+            return true;
+        default:
         {
-          return false;
+            if(!jge->GetLeftClickCoordinates(x, y))
+            {
+                return false;
+            }
         }
-      }
     }
     if(key != JGE_BTN_NONE)
     {
-      if (active != oldactive)
-      {
-          CardView::SelectorZone oldowner, owner;
-          if (CardView *q = dynamic_cast<CardView*>(oldactive))
-              oldowner = q->owner;
-          else
-              oldowner = CardView::nullZone;
-          if (CardView *q = dynamic_cast<CardView*>(active))
-              owner = q->owner;
-          else
-              owner = CardView::nullZone;
-          if (oldowner != owner)
-          {
-              if (CardView::nullZone != owner)
-              {
-                  if (PlayGuiObject* old = fetchMemory(lasts[owner]))
-                      switch (key)
-                      {
-                      case JGE_BTN_LEFT:
-                          if (old->x < oldactive->x)
-                              active = old;
-                          break;
-                      case JGE_BTN_RIGHT:
-                          if (old->x > oldactive->x)
-                              active = old;
-                          break;
-                      case JGE_BTN_UP:
-                          if (old->y < oldactive->y)
-                              active = old;
-                          break;
-                      case JGE_BTN_DOWN:
-                          if (old->y > oldactive->y)
-                              active = old;
-                          break;
-                      default:
-                          if (old)
-                              active = old;
-                          break;
-                      }
-              }
-              lasts[oldowner] = SelectorMemory(oldactive);
-          }
-      }
-      else
-      {
-          // active card hasn't changed - that means we're probably at an edge of the battlefield.
-          // check if we're not already a selected avatar - if not, select one depending whether we're going up/down.
-          GuiAvatar* avatar = dynamic_cast<GuiAvatar*> (active);
-          if (!avatar)
-          {
-              if (key == JGE_BTN_DOWN)
-              {
-                  active = duel->GetAvatars()->GetSelf();
-              }
-              else if (key == JGE_BTN_UP)
-              {
-                  active = duel->GetAvatars()->GetOpponent();
-              }
-          }
-      }
+        if (active != oldactive)
+        {
+            CardView::SelectorZone oldowner, owner;
+            if (CardView *q = dynamic_cast<CardView*>(oldactive))
+                oldowner = q->owner;
+            else
+                oldowner = CardView::nullZone;
+            if (CardView *q = dynamic_cast<CardView*>(active))
+                owner = q->owner;
+            else
+                owner = CardView::nullZone;
+            if (oldowner != owner)
+            {
+                if (CardView::nullZone != owner)
+                {
+                    if (PlayGuiObject* old = fetchMemory(lasts[owner]))
+                        switch (key)
+                        {
+                            case JGE_BTN_LEFT:
+                                if (old->x < oldactive->x)
+                                    active = old;
+                                break;
+                            case JGE_BTN_RIGHT:
+                                if (old->x > oldactive->x)
+                                    active = old;
+                                break;
+                            case JGE_BTN_UP:
+                                if (old->y < oldactive->y)
+                                    active = old;
+                                break;
+                            case JGE_BTN_DOWN:
+                                if (old->y > oldactive->y)
+                                    active = old;
+                                break;
+                            default:
+                                if (old)
+                                    active = old;
+                                break;
+                        }
+                }
+                lasts[oldowner] = SelectorMemory(oldactive);
+            }
+        }
+        else
+        {
+            // active card hasn't changed - that means we're probably at an edge of the battlefield.
+            // check if we're not already a selected avatar - if not, select one depending whether we're going up/down.
+            GuiAvatar* avatar = dynamic_cast<GuiAvatar*> (active);
+            if (!avatar)
+            {
+                if (key == JGE_BTN_DOWN)
+                {
+                    active = duel->GetAvatars()->GetSelf();
+                }
+                else if (key == JGE_BTN_UP)
+                {
+                    active = duel->GetAvatars()->GetOpponent();
+                }
+            }
+        }
     }
 
-switch_active:
+    switch_active:
     if (active != oldactive)
     {
         {
@@ -313,15 +313,18 @@ switch_active:
 
 void CardSelector::Update(float dt)
 {
-    // Smaller fixed scale (adjust this number if needed)
-    float scale = 0.65f;
+    // Scale for the big card preview (0.50 = slightly smaller than the old 0.65)
+    float scale = 0.85f;
 
-    float halfW = (CardGui::BigWidth * scale) / 2.0f;
-    float halfH = (CardGui::BigHeight * scale) / 2.0f;
+    // DrawCard() applies an internal displayScale (250/BigHeight) on top of zoom,
+    // so the actual rendered size is: zoom * 250 tall, zoom * 250 * BigWidth/BigHeight wide
+    float renderedH = scale * 250.0f;
+    float renderedW = scale * 250.0f * CardGui::BigWidth / CardGui::BigHeight;
 
-    // 10px padding from right, 15px from top
-    bigpos.x = SCREEN_WIDTH - halfW - 10.0f;
-    bigpos.y = halfH + 15.0f;
+    // Position the preview just above the horizontal hand, right-aligned
+    float handTop = SCREEN_HEIGHT_F - 30.0f - CardGui::Height;
+    bigpos.x = SCREEN_WIDTH_F * 0.75f;
+    bigpos.y = handTop - 3.0f - renderedH / 11.0f;
 
     bigpos.zoom = scale;
 
@@ -333,24 +336,19 @@ void CardSelector::Update(float dt)
 
 void CardSelector::Render()
 {
-    if (!active)
-        return;
-
-    active->Render();
-
-    if (CardView* card = dynamic_cast<CardView*>(active))
+    if (active)
     {
-        if (timer > 0)
+        active->Render();
+        if (CardView* card = dynamic_cast<CardView*>(active) )
         {
-            Pos npos(
-                    bigpos.x,
-                    bigpos.y,
-                    bigpos.zoom,
-                    bigpos.t,
-                    bigpos.alpha
-            );
-
-            card->DrawCard(npos, mDrawMode);
+            //if(timer > 0)
+            //card->DrawCard(bigpos, mDrawMode);
+            if(timer > 0)
+            {
+                float modx = 0.f;
+                Pos npos = Pos(bigpos.x+modx,bigpos.y-4.f,bigpos.zoom-(bigpos.zoom/5),bigpos.t,bigpos.alpha);
+                card->DrawCard(npos, mDrawMode);
+            }
         }
     }
 }

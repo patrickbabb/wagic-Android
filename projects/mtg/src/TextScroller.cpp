@@ -4,11 +4,10 @@
 #include "WResourceManager.h"
 #include "utils.h"
 #include "WFont.h"
-#include "MTGDefinitions.h"
 
 
 TextScroller::TextScroller(int fontId, float x, float y, float width, float scrollSpeed) :
-    JGuiObject(0), fontId(fontId)
+        JGuiObject(0), fontId(fontId)
 {
     mWidth = width;
     mScrollSpeed = scrollSpeed;
@@ -32,7 +31,7 @@ void TextScroller::setRandom(int mode)
 
 void TextScroller::Add(string text)
 {
-    if (!strings.size()) 
+    if (!strings.size())
         mText = text;
     strings.push_back(text);
 }
@@ -51,39 +50,39 @@ void TextScroller::Update(float dt)
     WFont * mFont = WResourceManager::Instance()->GetWFont(fontId);
     if (start > mFont->GetStringWidth(mText.c_str()))
     {
-            start = -mWidth;
-            if (mRandom)
-            {
-                    currentId = (rand() % strings.size());
-            }
-            else
-            {
-                    currentId++;
-                    if (currentId >= strings.size()) currentId = 0;
-            }
-            mText = strings[currentId];
+        start = -mWidth;
+        if (mRandom)
+        {
+            currentId = (rand() % strings.size());
+        }
+        else
+        {
+            currentId++;
+            if (currentId >= strings.size()) currentId = 0;
+        }
+        mText = strings[currentId];
     }
 }
 
 void TextScroller::Render()
 {
+
     JQuadPtr fakebar;
     JTexture * tex = WResourceManager::Instance()->RetrieveTexture("phaseinfo.png");
     if (tex)
     {
-        fakebar = WResourceManager::Instance()->RetrieveQuad("phaseinfo.png", 0.0f, 0.0f, tex->mWidth - 3.5f, tex->mHeight - 2.0f);
+        fakebar = WResourceManager::Instance()->RetrieveQuad("phaseinfo.png", 0.0f, 0.0f, tex->mWidth - 3.5f, tex->mHeight - 2.0f); //avoids weird rectangle around the texture because of bilinear filtering
     }
     WFont * mFont = WResourceManager::Instance()->GetWFont(fontId);
-    mFont->SetScale(DEFAULT_MAIN_FONT_SCALE);
     mFont->SetColor(ARGB(128,255,255,255));
     if(fakebar.get())
     {
         if(mText.length() > 1)
         {
-            float xscale = (SCREEN_WIDTH_F / 2.6f) / fakebar->mWidth;
-            float yscale = (mFont->GetHeight() * 5.0f) / fakebar->mHeight;
-            fakebar->SetHotSpot(fakebar->mWidth - 8.f, 0);
-            JRenderer::GetInstance()->RenderQuad(fakebar.get(), SCREEN_WIDTH_F, 4 * SCALE, 0, xscale, yscale);
+            float xscale = (SCREEN_WIDTH_F/2.6f) / fakebar->mWidth;
+            float yscale = (mFont->GetHeight()+(mFont->GetHeight()/3.5f)) / fakebar->mHeight;
+            fakebar->SetHotSpot(fakebar->mWidth-8.f,0);
+            JRenderer::GetInstance()->RenderQuad(fakebar.get(),SCREEN_WIDTH_F, 4,0,xscale,yscale);
         }
     }
     mFont->DrawString(mText.c_str(), mX, mY, JGETEXT_LEFT, start, mWidth);
@@ -91,16 +90,16 @@ void TextScroller::Render()
 
 ostream& TextScroller::toString(ostream& out) const
 {
-    return out << "TextScroller ::: mText : " << mText 
-                << " ; tempText : " << tempText 
-                << " ; mWidth : " << mWidth
-                << " ; mSpeed : " << mScrollSpeed 
-                << " ; mX,mY : " << mX << "," << mY 
-                << " ; start : " << start 
-                << " ; timer : " << timer 
-                << " ; strings : ?" 
-                << " ; currentId : " << currentId 
-                << " ; mRandom : " << mRandom;
+    return out << "TextScroller ::: mText : " << mText
+               << " ; tempText : " << tempText
+               << " ; mWidth : " << mWidth
+               << " ; mSpeed : " << mScrollSpeed
+               << " ; mX,mY : " << mX << "," << mY
+               << " ; start : " << start
+               << " ; timer : " << timer
+               << " ; strings : ?"
+               << " ; currentId : " << currentId
+               << " ; mRandom : " << mRandom;
 }
 
 
@@ -110,7 +109,7 @@ ostream& TextScroller::toString(ostream& out) const
 
 
 VerticalTextScroller::VerticalTextScroller(int fontId, float x, float y, float width, float height, float scrollSpeed, size_t numItemsShown) :
-TextScroller( fontId, x, y, width, scrollSpeed)
+        TextScroller( fontId, x, y, width, scrollSpeed)
 {
     mHeight = height;
     mNbItemsShown = numItemsShown;
@@ -132,7 +131,7 @@ void VerticalTextScroller::Add( string text )
 }
 
 /*
-    Updates happen everytime the top line disappears from view.  
+    Updates happen everytime the top line disappears from view.
     The top line is then moved to the end of the file and the scrolling resumes where it left off
 
 */
@@ -144,18 +143,18 @@ void VerticalTextScroller::Update(float dt)
 
     if ( mY <= mMarginY ) // top line has disappeared
     {
-            timer = 0;
-            // now readjust mText
-            size_t nbLines = 1;
-            vector<string> displayText = split( mText, '\n');
-            vector<string> newDisplayText;
-            for ( size_t i = nbLines; i < displayText.size(); ++i )
-                    newDisplayText.push_back( displayText[i] );
-            for ( size_t i = 0; i < nbLines; ++i )
-                    newDisplayText.push_back( displayText[i] );
+        timer = 0;
+        // now readjust mText
+        size_t nbLines = 1;
+        vector<string> displayText = split( mText, '\n');
+        vector<string> newDisplayText;
+        for ( size_t i = nbLines; i < displayText.size(); ++i )
+            newDisplayText.push_back( displayText[i] );
+        for ( size_t i = 0; i < nbLines; ++i )
+            newDisplayText.push_back( displayText[i] );
 
-            mText = join( newDisplayText, "\n" );
-            mY = mOriginalY;
+        mText = join( newDisplayText, "\n" );
+        mY = mOriginalY;
     }
     ++timer;
     mY -= currentYOffset;

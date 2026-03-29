@@ -132,7 +132,8 @@ void GuiHandSelf::Repos()
             float startX = SCREEN_WIDTH - 30.0f - CardGui::Width;
 
             // Push up by half card height
-            float yPos = SCREEN_HEIGHT - 30.0f - (CardGui::Height * 0.5f);
+            //float yPos = SCREEN_HEIGHT - 30.0f - (CardGui::Height * 0.5f);
+            float yPos = SCREEN_HEIGHT - 30.0f;
 
             for (vector<CardView*>::reverse_iterator it = cards.rbegin(); it != cards.rend(); ++it)
             {
