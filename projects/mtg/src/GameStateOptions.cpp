@@ -325,20 +325,19 @@ void GameStateOptions::Render()
 
     WFont * mFont = WResourceManager::Instance()->GetWFont(Fonts::MAGIC_FONT);
     mFont->SetColor(ARGB(255,200,200,200));
-    mFont->SetScale(1.0);
-    float startpos = 272 - timer;
+    mFont->SetScale(1.0f * SCALE);
+    float startpos = SCREEN_HEIGHT_F - timer;
     float pos = startpos;
     int size = sizeof(CreditsText) / sizeof(CreditsText[0]);
 
     for (int i = 0; i < size; i++)
     {
-        pos = startpos + 20 * i;
+        pos = startpos + 20 * SCALE_Y * i;
         if (pos > -20 && pos < SCREEN_HEIGHT + 20)
         {
             mFont->DrawString(CreditsText[i], SCREEN_WIDTH / 2, pos, JGETEXT_CENTER);
         }
     }
-
     if (pos < -20)
         timer = 0;
 

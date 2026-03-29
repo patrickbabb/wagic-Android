@@ -129,7 +129,7 @@ WGuiItem::WGuiItem(string _display, u8 _mF)
     displayValue = _display;
     mFocus = false;
     width = SCREEN_WIDTH;
-    height = 20;
+    height = 20 * SCALE_Y;
     x = 0;
     y = 0;
 }
@@ -503,6 +503,7 @@ string WDecoEnum::lookupVal(int value)
 void WDecoEnum::Render()
 {
     WFont * mFont = WResourceManager::Instance()->GetWFont(Fonts::OPTION_FONT);
+    mFont->SetScale(SCALE);
     mFont->SetColor(getColor(WGuiColor::TEXT));
     mFont->DrawString(_(getDisplay()).c_str(), getX() + 2, getY() + 3);
 
@@ -1180,8 +1181,9 @@ void WGuiTabMenu::Add(WGuiBase * it)
 {
     if (it)
     {
-        it->setY(it->getY() + 35);
-        it->setHeight(it->getHeight() - 35);
+        float tabBarH = 35 * SCALE_Y;
+        it->setY(it->getY() + tabBarH);
+        it->setHeight(it->getHeight() - tabBarH);
         WGuiMenu::Add(it);
     }
 }
@@ -1194,20 +1196,18 @@ void WGuiTabMenu::Render()
     if (!items.size()) return;
 
     float offset = x;
-    mFont->SetScale(0.8f);
+    mFont->SetScale(0.8f * SCALE);
     for (vector<WGuiBase*>::iterator it = items.begin(); it != items.end(); it++)
     {
         float w = mFont->GetStringWidth(_((*it)->getDisplay()).c_str());
         mFont->SetColor((*it)->getColor(WGuiColor::TEXT_TAB));
-        renderer->FillRoundRect(offset + 6.5f, 5, w + 6.5f, 25, 0, (*it)->getColor(WGuiColor::BACK_TAB));
+        renderer->FillRoundRect(offset + 6.5f * SCALE_X, 5 * SCALE_Y, w + 6.5f * SCALE_X, 25 * SCALE_Y, 0, (*it)->getColor(WGuiColor::BACK_TAB));
         //inside border
-        renderer->DrawRoundRect(offset + 6.5f, 5, w + 6.5f, 25, 0, ARGB(180,89,89,89));
-        //outside border
-        //renderer->DrawRoundRect(offset + 5.5f, 4, w + 8.5f, 27, 0, ARGB(180,240,240,240));
-        mFont->DrawString(_((*it)->getDisplay()).c_str(), offset + 10, 10);
-        offset += w + 10 + 2;
+        renderer->DrawRoundRect(offset + 6.5f * SCALE_X, 5 * SCALE_Y, w + 6.5f * SCALE_X, 25 * SCALE_Y, 0, ARGB(180,89,89,89));
+        mFont->DrawString(_((*it)->getDisplay()).c_str(), offset + 10 * SCALE_X, 10 * SCALE_Y);
+        offset += w + 10 * SCALE_X + 2;
     }
-    mFont->SetScale(1);
+    mFont->SetScale(SCALE);
 
     WGuiBase * c = Current();
     if (c) c->Render();
@@ -1226,24 +1226,23 @@ bool WGuiTabMenu::CheckUserInput(JButton key)
 
     if (mEngine->GetLeftClickCoordinates(i, j))
     {
-        if(j <= 25)
-        { // a dude clicked in the tab title bar, let's compute which tab from i
+        if(j <= 35 * SCALE_Y)
+        {
             float offset = x;
             WFont * mFont = WResourceManager::Instance()->GetWFont(Fonts::OPTION_FONT);
-            mFont->SetScale(0.8f);
+            mFont->SetScale(0.8f * SCALE);
             for (vector<WGuiBase*>::iterator it = items.begin(); it != items.end(); it++)
             {
                 float w = mFont->GetStringWidth(_((*it)->getDisplay()).c_str());
-
-                if(i >= offset+5 && i <= offset+w+10+2)
+                if(i >= offset + 5 * SCALE_X && i <= offset + w + (10 + 2) * SCALE_X)
                 {
                     setSelected(it);
                     mEngine->LeftClickedProcessed();
                     return true;
                 }
-                offset += w + 10 + 2;
+                offset += w + 10 * SCALE_X + 2;
             }
-            mFont->SetScale(1);
+            mFont->SetScale(SCALE);
         }
     }
 
@@ -1292,7 +1291,7 @@ void WGuiAward::Overlay()
 {
     JRenderer * r = JRenderer::GetInstance();
     WFont * mFont = WResourceManager::Instance()->GetWFont(Fonts::OPTION_FONT);
-    mFont->SetScale(0.8f);
+    mFont->SetScale(0.8f * SCALE);
     mFont->SetColor(getColor(WGuiColor::TEXT));
 
     string s = details;
@@ -1309,7 +1308,7 @@ void WGuiAward::Overlay()
         mFont->DrawString(::_(s), 30, 16);
     }
 
-    mFont->SetScale(1);
+    mFont->SetScale(SCALE);
 }
 void WGuiAward::Underlay()
 {
@@ -1372,7 +1371,7 @@ void WGuiAward::Render()
     if (!goa) return;
 
     WFont * mFont = WResourceManager::Instance()->GetWFont(Fonts::OPTION_FONT);
-    mFont->SetScale(1);
+    mFont->SetScale(SCALE);
     mFont->SetColor(getColor(WGuiColor::TEXT));
 
     float myX = x;
@@ -1385,7 +1384,7 @@ void WGuiAward::Render()
     mFont->DrawString(::_(displayValue).c_str(), myX, myY, JGETEXT_LEFT);
 
     myY += fH + 3 * fM;
-    mFont->SetScale(.75);
+    mFont->SetScale(0.75f * SCALE);
     fH = mFont->GetHeight();
     if (text.size())
     {
@@ -1399,7 +1398,7 @@ void WGuiAward::Render()
         myY += fH + fM;
     }
     setHeight(myY - y);
-    mFont->SetScale(1);
+    mFont->SetScale(SCALE);
 }
 
 WGuiAward::WGuiAward(int _id, string name, string _text, string _details) :
