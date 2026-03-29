@@ -16,6 +16,18 @@ MenuItem::MenuItem(int id, WFont *font, string text, float x, float y, JQuad * _
     hgeParticleSystemInfo * psi = WResourceManager::Instance()->RetrievePSI(particle, particleTex);
     if (psi)
     {
+        // Scale particle properties for current screen resolution
+        psi->fSizeStart        *= SCALE;
+        psi->fSizeEnd          *= SCALE;
+        psi->fSizeVar          *= SCALE;
+        psi->fSpeedMin         *= SCALE;
+        psi->fSpeedMax         *= SCALE;
+        psi->fGravityMin       *= SCALE;
+        psi->fGravityMax       *= SCALE;
+        psi->fRadialAccelMin   *= SCALE;
+        psi->fRadialAccelMax   *= SCALE;
+        psi->fTangentialAccelMin *= SCALE;
+        psi->fTangentialAccelMax *= SCALE;
         mParticleSys = NEW hgeParticleSystem(psi);
         mParticleSys->MoveTo(mX, mY);
     }
@@ -54,6 +66,7 @@ void MenuItem::Render()
         renderer->RenderQuad(offQuad, SCREEN_WIDTH - 20 * SCALE, SCREEN_HEIGHT / 2, 0, iconScale, iconScale);
         offQuad->SetColor(ARGB(255,255,255,255));
         onQuad->SetColor(ARGB(255,255,255,255));
+        mFont->SetScale(DEFAULT_MENU_FONT_SCALE);
         mFont->DrawString(mText.c_str(), SCREEN_WIDTH / 2, 3 * SCREEN_HEIGHT / 4, JGETEXT_CENTER);
         renderer->RenderQuad(onQuad, mX, mY, 0, mScale * SCALE, mScale * SCALE);
     }
@@ -133,48 +146,49 @@ OtherMenuItem::~OtherMenuItem()
 
 void OtherMenuItem::Render()
 {
-  int alpha = 255;
-  if (GetId() == MENUITEM_TROPHIES && options.newAward())
-      alpha = (int) (sin(mTimeIndex) * 255);
+    int alpha = 255;
+    if (GetId() == MENUITEM_TROPHIES && options.newAward())
+        alpha = (int) (sin(mTimeIndex) * 255);
 
-  float olds = mFont->GetScale();
-  float xPos = SCREEN_WIDTH - 64;
-  float xTextPos = xPos + 54;
-  float yPos = SCREEN_HEIGHT_F-26.f;
-  int textAlign = JGETEXT_RIGHT;
-  //onQuad->SetHFlip(false);
+    float olds = mFont->GetScale();
+    float xPos = SCREEN_WIDTH - 100 * SCALE;
+    float xTextPos = xPos + 4 * SCALE;
+    float yPos = SCREEN_HEIGHT_F - 20.f * SCALE;
+    int textAlign = JGETEXT_LEFT;
 
-  switch(mKey)
-  {
-  case JGE_BTN_PREV:
-      xPos = 5;
-      xTextPos = xPos + 10;
-      textAlign = JGETEXT_LEFT;
-      //onQuad->SetHFlip(true);
-      break;
-  default:
-      break;
-  }
+    switch(mKey)
+    {
+        case JGE_BTN_PREV:
+            xPos = 5;
+            xTextPos = xPos + 10 * SCALE;
+            textAlign = JGETEXT_LEFT;
+            break;
+        default:
+            break;
+    }
 
-  //onQuad->SetColor(ARGB(abs(alpha),255,255,255));
-  mFont->SetScale(1.0f);
-  mFont->SetScale(50.0f / mFont->GetStringWidth(mText.c_str()));
-  //JRenderer::GetInstance()->RenderQuad(onQuad, xPos, yPos+2, 0, mScale, mScale);
-  //JRenderer::GetInstance()->FillRoundRect(xPos,yPos+2,mFont->GetStringWidth(mText.c_str()),mFont->GetHeight(),2,ARGB(abs(alpha),255,255,255));
-  JRenderer::GetInstance()->FillRoundRect(xPos+1, yPos+6, mFont->GetStringWidth(mText.c_str()) - 3, mFont->GetHeight() - 10, 5, ARGB(abs(alpha), 5, 5, 5));
-  if(!mHasFocus)
-  {
-    mFont->SetColor(ARGB(abs(alpha),255,255,255));
-    JRenderer::GetInstance()->FillRoundRect(xPos, yPos+5, mFont->GetStringWidth(mText.c_str()) - 3, mFont->GetHeight() - 10, 5, ARGB(abs(alpha), 140, 23, 23));
-  }
-  else
-  {
-    mFont->SetColor(ARGB(abs(alpha),5,5,5));
-    JRenderer::GetInstance()->FillRoundRect(xPos, yPos+5, mFont->GetStringWidth(mText.c_str()) - 3, mFont->GetHeight() - 10, 5, ARGB(abs(alpha), 140, 140, 140));
-  }
-  JRenderer::GetInstance()->DrawRoundRect(xPos, yPos+5, mFont->GetStringWidth(mText.c_str()) - 3, mFont->GetHeight() - 10, 5, ARGB(abs(alpha-20), 5, 5, 5));
-  mFont->DrawString(mText, xTextPos, yPos+9, textAlign);
-  mFont->SetScale(olds);
+    mFont->SetScale(1.0f);
+    mFont->SetScale((60.0f * SCALE) / mFont->GetStringWidth(mText.c_str()));
+
+    float btnW = mFont->GetStringWidth(mText.c_str());
+    float btnH = mFont->GetHeight();
+    float pad  = 3.0f * SCALE;
+    float vpad = 1.0f * SCALE;
+
+    JRenderer::GetInstance()->FillRoundRect(xPos+1, yPos + vpad * 0.6f, btnW - pad, btnH - vpad, 5 * SCALE, ARGB(abs(alpha), 5, 5, 5));
+    if(!mHasFocus)
+    {
+        mFont->SetColor(ARGB(abs(alpha),255,255,255));
+        JRenderer::GetInstance()->FillRoundRect(xPos, yPos + vpad * 0.5f, btnW - pad, btnH - vpad, 5 * SCALE, ARGB(abs(alpha), 140, 23, 23));
+    }
+    else
+    {
+        mFont->SetColor(ARGB(abs(alpha),5,5,5));
+        JRenderer::GetInstance()->FillRoundRect(xPos, yPos + vpad * 0.5f, btnW - pad, btnH - vpad, 5 * SCALE, ARGB(abs(alpha), 140, 140, 140));
+    }
+    JRenderer::GetInstance()->DrawRoundRect(xPos, yPos + vpad * 0.5f, btnW - pad, btnH - vpad, 5 * SCALE, ARGB(abs(alpha-20), 5, 5, 5));
+    mFont->DrawString(mText, xTextPos, yPos + vpad * 0.9f, textAlign);
+    mFont->SetScale(olds);
 }
 
 void OtherMenuItem::Update(float dt)

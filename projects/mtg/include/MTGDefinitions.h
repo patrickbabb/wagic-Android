@@ -1,10 +1,12 @@
 #ifndef _MTGDEFINITION_H_
 #define _MTGDEFINITION_H_
 
-const float DEFAULT_MENU_FONT_SCALE = 1.0f;
-const float DEFAULT_MAIN_FONT_SCALE = 1.0f;
-const float DEFAULT_TEXT_FONT_SCALE = 1.0f;
-const float ACTIVE_MENU_FONT_SCALE = 1.2f;
+#include "JGE.h"
+
+#define DEFAULT_MENU_FONT_SCALE (SCREEN_HEIGHT / 272.0f)
+#define DEFAULT_MAIN_FONT_SCALE (SCREEN_HEIGHT / 272.0f)
+#define DEFAULT_TEXT_FONT_SCALE (SCREEN_HEIGHT / 272.0f)
+#define ACTIVE_MENU_FONT_SCALE  (SCREEN_HEIGHT / 272.0f * 1.2f)
 
 #include <string>
 using std::string;

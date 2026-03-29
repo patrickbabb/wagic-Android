@@ -1596,7 +1596,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         setOnKeyListener(this);
         setOnTouchListener(this);
 
-        mSensorManager = (SensorManager) context.getSystemService("sensor");
+        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         parent = app;
     }
 

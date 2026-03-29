@@ -4,6 +4,7 @@
 #include "WResourceManager.h"
 #include "utils.h"
 #include "WFont.h"
+#include "MTGDefinitions.h"
 
 
 TextScroller::TextScroller(int fontId, float x, float y, float width, float scrollSpeed) :
@@ -66,23 +67,23 @@ void TextScroller::Update(float dt)
 
 void TextScroller::Render()
 {
-    
     JQuadPtr fakebar;
     JTexture * tex = WResourceManager::Instance()->RetrieveTexture("phaseinfo.png");
-        if (tex)
-        {
-            fakebar = WResourceManager::Instance()->RetrieveQuad("phaseinfo.png", 0.0f, 0.0f, tex->mWidth - 3.5f, tex->mHeight - 2.0f); //avoids weird rectangle around the texture because of bilinear filtering
-        }
+    if (tex)
+    {
+        fakebar = WResourceManager::Instance()->RetrieveQuad("phaseinfo.png", 0.0f, 0.0f, tex->mWidth - 3.5f, tex->mHeight - 2.0f);
+    }
     WFont * mFont = WResourceManager::Instance()->GetWFont(fontId);
+    mFont->SetScale(DEFAULT_MAIN_FONT_SCALE);
     mFont->SetColor(ARGB(128,255,255,255));
     if(fakebar.get())
     {
         if(mText.length() > 1)
         {
-            float xscale = (SCREEN_WIDTH_F/2.6f) / fakebar->mWidth;
-            float yscale = (mFont->GetHeight()+(mFont->GetHeight()/3.5f)) / fakebar->mHeight;
-            fakebar->SetHotSpot(fakebar->mWidth-8.f,0);
-            JRenderer::GetInstance()->RenderQuad(fakebar.get(),SCREEN_WIDTH_F, 4,0,xscale,yscale);
+            float xscale = (SCREEN_WIDTH_F / 2.6f) / fakebar->mWidth;
+            float yscale = (mFont->GetHeight() * 5.0f) / fakebar->mHeight;
+            fakebar->SetHotSpot(fakebar->mWidth - 8.f, 0);
+            JRenderer::GetInstance()->RenderQuad(fakebar.get(), SCREEN_WIDTH_F, 4 * SCALE, 0, xscale, yscale);
         }
     }
     mFont->DrawString(mText.c_str(), mX, mY, JGETEXT_LEFT, start, mWidth);
