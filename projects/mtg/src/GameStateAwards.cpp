@@ -298,8 +298,8 @@ bool GameStateAwards::enterSet(int setid)
     setSrc->setOffset(0);
     spoiler->Entering(JGE_BTN_NONE);
     WGuiCardImage * wi = NEW WGuiCardImage(setSrc);
-    wi->setX(105);
-    wi->setY(137);
+    wi->setX(SCREEN_WIDTH * 0.164f);   // was hardcoded 105 (105/640 ≈ 0.164)
+    wi->setY(SCREEN_HEIGHT * 0.504f);  // was hardcoded 137 (137/272 ≈ 0.504)
     detailview->Add(wi);
     detailview->Add(spoiler);
     detailview->Entering(JGE_BTN_NONE);

@@ -1319,50 +1319,41 @@ void WGuiAward::Underlay()
     string n = id ? Options::getName(id) : textId;
     if (n.size())
     {
-        sprintf(buf, "psptrophy_%s.png", n.c_str()); //Trophy specific to the award
-        trophy = WResourceManager::Instance()->RetrieveTempQuad(buf); //Themed version...
+        sprintf(buf, "psptrophy_%s.png", n.c_str());
+        trophy = WResourceManager::Instance()->RetrieveTempQuad(buf);
     }
-
     if (!trophy && id >= Options::SET_UNLOCKS)
-    {
-        trophy = WResourceManager::Instance()->RetrieveTempQuad("psptrophy_set.png"); //TODO FIXME: Should look in set dir too.
-    }
-
-    if (!trophy.get()) //Fallback to basic trophy image.
+        trophy = WResourceManager::Instance()->RetrieveTempQuad("psptrophy_set.png");
+    if (!trophy.get())
         trophy = WResourceManager::Instance()->RetrieveTempQuad("psptrophy.png");
 #else
     string n = id ? Options::getName(id) : textId;
     if (n.size())
     {
-        sprintf(buf, "trophy_%s.png", n.c_str()); //Trophy specific to the award
-        trophy = WResourceManager::Instance()->RetrieveTempQuad(buf); //Themed version...
+        sprintf(buf, "trophy_%s.png", n.c_str());
+        trophy = WResourceManager::Instance()->RetrieveTempQuad(buf);
     }
-
     if (!trophy && id >= Options::SET_UNLOCKS)
-    {
-        trophy = WResourceManager::Instance()->RetrieveTempQuad("trophy_set.png"); //TODO FIXME: Should look in set dir too.
-    }
-
-    if (!trophy.get()) //Fallback to basic trophy image.
+        trophy = WResourceManager::Instance()->RetrieveTempQuad("trophy_set.png");
+    if (!trophy.get())
         trophy = WResourceManager::Instance()->RetrieveTempQuad("trophy.png");
 #endif
 
     if (trophy.get())
     {
-        trophy->SetHotSpot(0,trophy->mHeight);
-        if(trophy->mHeight == 268.f && trophy->mWidth == 203.f)
-        {
-            trophy->SetHotSpot(0,0);
-            JRenderer::GetInstance()->RenderQuad(trophy.get(), 0, SCREEN_HEIGHT-trophy->mHeight);
-        }
-        else if(trophy->mHeight == 1268.f && trophy->mWidth == 1203.f)
-        {
-            JRenderer::GetInstance()->RenderQuad(trophy.get(), -17, SCREEN_HEIGHT-35, 0, 240.f / trophy->mWidth, 210.f / trophy->mHeight);
-        }
-        else
-            JRenderer::GetInstance()->RenderQuad(trophy.get(), 0, SCREEN_HEIGHT, 0, 171.f / trophy->mWidth, 192.f / trophy->mHeight);
-    }
+        // Scale the trophy to occupy ~40% of the screen height, preserving aspect ratio,
+        // and anchor it to the bottom-left corner of the screen.
+        float targetH = SCREEN_HEIGHT * 0.40f;
+        float scaleX = targetH / trophy->mWidth;
+        float scaleY = targetH / trophy->mHeight;
+        float scale = (scaleX < scaleY) ? scaleX : scaleY;
 
+        float renderW = trophy->mWidth * scale;
+        float renderH = trophy->mHeight * scale;
+
+        trophy->SetHotSpot(0, 0);
+        JRenderer::GetInstance()->RenderQuad(trophy.get(), 0, SCREEN_HEIGHT - renderH, 0, scale, scale);
+    }
 }
 void WGuiAward::Render()
 {
