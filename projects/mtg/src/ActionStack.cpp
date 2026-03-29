@@ -1440,9 +1440,9 @@ void ActionStack::Render()
         return;
 
     static const float kSpacer = 8;
-    static const float x0 = 250;
+    const float x0 = SCREEN_WIDTH * 0.50f;
     static const float y0 = 0;
-    float width = 200;
+    const float width = SCREEN_WIDTH * 0.33f;
     float height = 25;
     float currenty = y0 + 5;
 

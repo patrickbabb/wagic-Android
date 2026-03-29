@@ -384,7 +384,7 @@ void SimplePad::Render()
     // Scale font to fit within cell height
     // GetHeight() returns height at current scale, so compute needed scale
     float baseH = mFont->GetHeight() / mFont->GetScale();  // height at scale=1
-    float fontScale = (cellH * 0.15f) / baseH;             // 75% of cell for text
+    float fontScale = (cellH * 0.55f) / baseH;             // 55% of cell for text
     mFont->SetScale(fontScale);
 
     // -----------------------------------------------------------------------
@@ -518,8 +518,8 @@ void SimplePad::Render()
         float lW = mFont->GetStringWidth(label.c_str());
         float lH = mFont->GetHeight();
         mFont->DrawString(label.c_str(),
-                          kx + (kw - lW) / 2.0f,
-                          ky + (kh - lH) / 2.0f);
+                          kx + (kw - lW) / 2.0f + lW * 0.35f,
+                          ky + (kh - lH) / 2.0f + lH * 0.35f);
 
         // Touch hit center
         keys[x]->mX = kx + kw / 2.0f;
