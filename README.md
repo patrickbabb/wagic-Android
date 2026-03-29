@@ -15,8 +15,8 @@ The original Wagic project supports multiple legacy platforms and build systems.
 - Deprecate non-Android platforms (PSP, iOS, desktop, legacy ports)
 - Replace legacy build systems with a modern Gradle-based pipeline
 - Simplify project structure for easier development and debugging
-- Remove outdated dependencies and reduce technical debt
-- Gradually migrate away from SDL toward a more modern rendering approach
+- Remove/replace outdated dependencies where possible
+- Keep the game and card logic up-to-date with main Wagic repo
 
 ---
 
@@ -41,7 +41,7 @@ The long-term goal:
 
 ### Build Instructions
 
-1. Open the project in Android Studio  
+1. Open the Android subproject in Android Studio (wagic-Android\projects\mtg\Android)
 2. Allow Gradle to sync  
 3. Select a device or emulator  
-4. Run the `app` module
+4. Run the `Wagic` module
