@@ -252,10 +252,10 @@ void GuiPlay::Replace()
                     opponentSpells.Enstack(*it);
             }
         }
-    float x = 24 + opponentSpells.nextX();
+    float x = (SCREEN_WIDTH * 0.10f) + opponentSpells.nextX();
     //seperated the variable X into 2 different variables. There are 2 players here!!
     //we should not be using a single variable to determine the positioning of cards!!
-    float myx = 24 + selfSpells.nextX();
+    float myx = (SCREEN_WIDTH * 0.10f) + selfSpells.nextX();
     opponentLands.reset(opponentLandsN,x, 50);
     opponentCreatures.reset(opponentCreaturesN, x, 95);
     battleField.reset(x, 145);//what does this variable do? I can comment it out with no repercussions...is this being double handled?

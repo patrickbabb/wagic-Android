@@ -5,7 +5,6 @@
 #include "GameObserver.h"
 #include "Translate.h"
 #include "CardSelector.h"
-
 /*
  static int colors[] =
  {
@@ -156,13 +155,13 @@ void GuiPhaseBar::Render()
     sprintf(buf, _("(%s%s) %s").c_str(), currentP.c_str(), interrupt.c_str(),phaseNameToTranslate.c_str());
 #if !defined (PSP)
     if(phaseinfo.get())
-    {//fix phaseinfo graphics... should look nice now...
+    {
         float testW = ((font->GetStringWidth(buf))*2) - SCREEN_WIDTH_F;
-        phaseinfo->SetHotSpot(testW+40.f, 0);
+        phaseinfo->SetHotSpot(testW + 105.f, 0);
         JRenderer::GetInstance()->RenderQuad(phaseinfo.get(),0,0,0,SCREEN_WIDTH_F / phaseinfo->mWidth, SCREEN_HEIGHT_F / phaseinfo->mHeight);
     }
 #endif
-    font->DrawString(buf, SCREEN_WIDTH - 5, 2, JGETEXT_RIGHT);
+    font->DrawString(buf, SCREEN_WIDTH - 15, 2, JGETEXT_RIGHT);
 }
 
 int GuiPhaseBar::receiveEventMinus(WEvent *e)
