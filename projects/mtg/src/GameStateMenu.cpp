@@ -812,7 +812,12 @@ void GameStateMenu::Render()
             if (wpTex)
             {
                 JQuadPtr wpQuad = WResourceManager::Instance()->RetrieveTempQuad(wp);
-                renderer->RenderQuad(wpQuad.get(), 0, 0, 0, SCREEN_WIDTH_F / wpQuad->mWidth, SCREEN_HEIGHT_F / wpQuad->mHeight);
+                float scaleX = SCREEN_WIDTH_F / wpQuad->mWidth;
+                float scaleY = SCREEN_HEIGHT_F / wpQuad->mHeight;
+                float scale = (scaleX > scaleY) ? scaleX : scaleY;
+                float offsetX = (SCREEN_WIDTH_F - wpQuad->mWidth * scale) / 2.0f;
+                float offsetY = (SCREEN_HEIGHT_F - wpQuad->mHeight * scale) / 2.0f;
+                renderer->RenderQuad(wpQuad.get(), offsetX, offsetY, 0, scale, scale);
             }
         }
 
