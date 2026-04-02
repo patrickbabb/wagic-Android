@@ -273,7 +273,16 @@ void CardGui::Render()
                 else if(card->isCommander)
                     fakeborder->SetColor(ARGB((int)(actA),255,255,255)); //white border for commanders
                 else
-                    fakeborder->SetColor(ARGB((int)(actA),15,15,15));
+                {
+                    string cardsetname = setlist[card->setId].c_str();
+                    bool whiteBorder = (cardsetname == "2ED" || cardsetname == "RV" || cardsetname == "4ED" ||
+                                        cardsetname == "5ED" || cardsetname == "6ED" || cardsetname == "7ED" ||
+                                        cardsetname == "8ED" || cardsetname == "9ED" || cardsetname == "S00" ||
+                                        cardsetname == "S99" || cardsetname == "PTK" || cardsetname == "BTD" ||
+                                        cardsetname == "ATH" || cardsetname == "BRB" || cardsetname == "CHR" ||
+                                        cardsetname == "DM") && !options[Options::BLKBORDER].number;
+                    fakeborder->SetColor(whiteBorder ? ARGB((int)(actA),248,248,255) : ARGB((int)(actA),15,15,15));
+                }
             }
             else
                 fakeborder->SetColor(ARGB((int)(actA),15,15,15));
@@ -1324,7 +1333,7 @@ void CardGui::RenderBig(MTGCard* card, const Pos& pos, bool thumb, bool noborder
         //universal border
         if(options[Options::SHOWBORDER].number)
         {
-            float borderSize = 3.5f * kCardScale;
+            float borderSize = 4.0f * kCardScale;
             if((cardsetname == "2ED"||cardsetname == "RV"||cardsetname == "4ED"||cardsetname == "5ED"||cardsetname == "6ED"||cardsetname == "7ED"||cardsetname == "8ED"||cardsetname == "9ED"||cardsetname == "S00"||cardsetname == "S99"||cardsetname == "PTK"||cardsetname == "BTD"||cardsetname == "ATH"||cardsetname == "BRB"||cardsetname == "CHR"||cardsetname == "DM")
                && !options[Options::BLKBORDER].number)
             {//white border
