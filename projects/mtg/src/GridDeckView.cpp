@@ -107,7 +107,7 @@ void GridDeckView::Render()
 {
     int firstVisibleCard = 2;
     int lastVisibleCard = mCards.size() - 2;
-    bool mode = options[Options::GDVLARGEIMAGE].number?false:true;
+    bool mode = false; // always use full card images on Android
     bool prefetch = options[Options::CARDPREFETCHING].number?true:false;
 
     if(!mScrollEasing.finished())

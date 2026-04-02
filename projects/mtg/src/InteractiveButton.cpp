@@ -87,7 +87,7 @@ void InteractiveButton::Render()
     {
         renderer->RenderQuad(buttonImage.get(), buttonXOffset - buttonImage.get()->mWidth/2, buttonYOffset + mainFontHeight/2, 0, pspIconsSize, pspIconsSize);
     }
-    //mainFont->SetColor(ARGB(255, 0, 0, 0));
+    mainFont->SetColor(ARGB(255, 255, 255, 255));
     mainFont->DrawString(detailedInfoString, buttonXOffset, buttonYOffset);
 }
 
